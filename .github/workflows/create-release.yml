@@ -43,9 +43,9 @@ jobs:
           context: ./images/base
           push: true
           tags: |
-            ${IMAGE_BASE}:latest
-            ${IMAGE_BASE}:base-latest
-            ${IMAGE_BASE}:base-${{needs.create_release.outputs.version}}
+            ${{ env.IMAGE_BASE }}:latest
+            ${{ env.IMAGE_BASE }}:base-latest
+            ${{ env.IMAGE_BASE }}:base-${{needs.create_release.outputs.version}}
 
       - name: Build github-actions-runner:kaniko-sidecar
         uses: docker/build-push-action@v2
@@ -53,7 +53,8 @@ jobs:
           context: ./images/kaniko-sidecar
           push: true
           tags: |
-            ${IMAGE_BASE}:kaniko-sidecar-${{needs.create_release.outputs.version}}
+            ${{ env.IMAGE_BASE }}:kaniko-sidecar-latest
+            ${{ env.IMAGE_BASE }}:kaniko-sidecar-${{needs.create_release.outputs.version}}
 
   publish_release:
     runs-on: ubuntu-latest
