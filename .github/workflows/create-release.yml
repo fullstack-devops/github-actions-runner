@@ -58,7 +58,7 @@ jobs:
 
       - name: link child image to current version
         run: |
-          sed -i "s/FROM.*/FROM ${{ env.IMAGE_BASE }}:base-${{ needs.create_release.outputs.version }}/g" images/ansible-k8s/Dockerfile
+          sed -i --expression "s@FROM.*@FROM ${{ env.IMAGE_BASE }}:base-${{ needs.create_release.outputs.version }}@g" images/ansible-k8s/Dockerfile
 
       - name: Build github-actions-runner:ansible-k8s
         uses: docker/build-push-action@v2
