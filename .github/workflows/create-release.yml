@@ -56,6 +56,18 @@ jobs:
             ${{ env.IMAGE_BASE }}:kaniko-sidecar-latest
             ${{ env.IMAGE_BASE }}:kaniko-sidecar-${{needs.create_release.outputs.version}}
 
+      - name: link child image to current version
+        run: sed -i "s/FROM.*/FROM ${{ env.IMAGE_BASE }}:base-${{ needs.create_release.outputs.version }}/g" images/ansible-k8s/Dockerfile
+
+      - name: Build github-actions-runner:ansible-k8s
+        uses: docker/build-push-action@v2
+        with:
+          context: ./images/ansible-k8s
+          push: true
+          tags: |
+            ${{ env.IMAGE_BASE }}:ansible-k8s-latest
+            ${{ env.IMAGE_BASE }}:ansible-k8s-${{needs.create_release.outputs.version}}
+
   publish_release:
     runs-on: ubuntu-latest
     needs: [create_release, build]
