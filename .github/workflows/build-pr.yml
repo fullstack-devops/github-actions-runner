@@ -37,7 +37,7 @@ jobs:
           context: ./images/base
           push: true
           tags: |
-            ${IMAGE_BASE}:base-pr-${{ github.event.pull_request.number }}
+            ${{ env.IMAGE_BASE }}:base-pr-${{ github.event.pull_request.number }}
 
       - name: Build github-actions-runner:kaniko-sidecar
         uses: docker/build-push-action@v2
@@ -45,4 +45,4 @@ jobs:
           context: ./images/kaniko-sidecar
           push: true
           tags: |
-            ${IMAGE_BASE}:kaniko-sidecar-pr-${{ github.event.pull_request.number }}
+            ${{ env.IMAGE_BASE }}:kaniko-sidecar-pr-${{ github.event.pull_request.number }}
