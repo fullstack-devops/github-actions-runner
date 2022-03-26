@@ -48,7 +48,8 @@ jobs:
             ${{ env.IMAGE_BASE }}:kaniko-sidecar-pr-${{ github.event.pull_request.number }}
 
       - name: link child image to current pr
-        run: sed -i 's/FROM.*/FROM ${{ env.IMAGE_BASE }}:base-pr-${{ github.event.pull_request.number }}/g' images/ansible-k8s/Dockerfile
+        run: |
+          sed -i "s/FROM.*/FROM ${{ env.IMAGE_BASE }}:base-pr-${{ github.event.pull_request.number }}/g" images/ansible-k8s/Dockerfile
 
       - name: Build github-actions-runner:ansible-k8s
         uses: docker/build-push-action@v2
