@@ -40,7 +40,7 @@ if [ -z ${RUNNER_HOME} ]; then
     exit 1
 fi
 
-if [ "$KANIKO_ENABLED" == "1" ]; then
+if [ "$KANIKO_ENABLED" == "true" ]; then
     readonly GH_WORKDIR=$GH_KANIKO_WORKDIR
     echo "Build container via Kaniko: enabled"
 else

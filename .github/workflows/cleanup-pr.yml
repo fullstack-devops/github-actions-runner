@@ -1,0 +1,25 @@
+name: Cleanup PR
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  purge-image:
+    name: Delete image from ghcr.io
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete base image
+        uses: bots-house/ghcr-delete-image-action@v1
+        with:
+          owner: ${{ github.repository_owner }}
+          name: github-actions-runner
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: base-pr-${{ github.event.pull_request.number }}
+      - name: Delete kaniko-sidecar image
+        uses: bots-house/ghcr-delete-image-action@v1
+        with:
+          owner: ${{ github.repository_owner }}
+          name: github-actions-runner
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: kaniko-sidecar-pr-${{ github.event.pull_request.number }}

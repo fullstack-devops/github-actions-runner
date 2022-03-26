@@ -21,6 +21,7 @@ For the helm values see the [values.yaml](helm/values.yaml), section `envValues`
 | `GH_URL`          | string | `https://github.com`     | For GitHub Enterprise support                                        |
 | `GH_API_ENDPOINT` | string | `https://api.github.com` | For GitHub Enterprise support eg.: `https://git.example.com/api/v3/` |
 | `GH_REPO`         | string |                          | installing a runner to a spezific repository                         |
+| `KANIKO_ENABLED`  | bool   | `false`                  | enable builds with kaniko (works only with kaniko-sidecar)           |
 
 ---
 
@@ -69,6 +70,7 @@ services:
     environment:
       GH_ORG: fullstack-devops
       GH_ACCESS_TOKEN: ghp_****
+      KANIKO_ENABLED: "true"
     volumes:
       - kaniko_workspace:/kaniko/workspace
 
@@ -76,7 +78,6 @@ services:
     image: github-action-runner:kaniko-sidecar-latest
     volumes:
       - kaniko_workspace:/kaniko/workspace
-
 ```
 
 ### kubernetes pod
