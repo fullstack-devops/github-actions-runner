@@ -43,6 +43,7 @@ fi
 if [ "$KANIKO_ENABLED" == "true" ]; then
     readonly GH_WORKDIR=$GH_KANIKO_WORKDIR
     echo "Build container via Kaniko: enabled"
+    GH_RUNNER_LABELS="${GH_RUNNER_LABELS},kaniko"
 else
     readonly GH_WORKDIR=$GH_RUNNER_WORKDIR
     echo "Build container via Kaniko: disabled"
