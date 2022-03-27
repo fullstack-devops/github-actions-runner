@@ -73,7 +73,7 @@ volumes:
 
 services:
   github-action-runner:
-    image: github-action-runner:base-latest
+    image: ghcr.io/fullstack-devops/github-actions-runner:base-latest
     environment:
       GH_ORG: fullstack-devops
       GH_ACCESS_TOKEN: ghp_****
@@ -82,7 +82,7 @@ services:
       - kaniko_workspace:/kaniko/workspace
 
   github-action-runner-kaniko:
-    image: github-action-runner:kaniko-sidecar-latest
+    image: ghcr.io/fullstack-devops/github-actions-runner:kaniko-sidecar-latest
     volumes:
       - kaniko_workspace:/kaniko/workspace
 ```

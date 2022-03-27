@@ -45,7 +45,8 @@ WORKDIR /home/${USERNAME}/runner
 # add a non-sudo user
 RUN useradd -m $USERNAME \
   && usermod -aG sudo $USERNAME \
-  && chown -R $USERNAME /home/${USERNAME} \
+  && chown -R $USERNAME $GH_RUNNER_WORKDIR \
+  && chown -R $USERNAME $GH_KANIKO_WORKDIR \
   && mkdir -p ${RUNNER_HOME}
 
 # Install github runner

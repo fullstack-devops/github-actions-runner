@@ -1,0 +1,20 @@
+version: "3"
+
+volumes:
+  kaniko_workspace:
+      driver: local
+
+services:
+  github-action-runner:
+    image: ghcr.io/fullstack-devops/github-actions-runner:base-latest
+    environment:
+      GH_ORG: fullstack-devops
+      KANIKO_ENABLED: "true"
+      GH_ACCESS_TOKEN: ${GH_ACCESS_TOKEN}
+    volumes:
+      - kaniko_workspace:/kaniko/workspace
+
+  github-action-runner-kaniko:
+    image: ghcr.io/fullstack-devops/github-actions-runner:kaniko-sidecar-latest
+    volumes:
+      - kaniko_workspace:/kaniko/workspace
