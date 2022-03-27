@@ -58,7 +58,9 @@ jobs:
 
       - name: link child image to current version
         run: |
-          sed -i --expression "s@FROM.*@FROM ${{ env.IMAGE_BASE }}:base-${{ needs.create_release.outputs.version }}@g" images/ansible-k8s/Dockerfile
+          sed -i --expression "s@FROM.*@FROM ${{ env.IMAGE_BASE }}:base-${{ needs.create_release.outputs.version }}@g" \
+          images/ansible-k8s/Dockerfile \
+          images/fullstacked/Dockerfile
 
       - name: Build github-actions-runner:ansible-k8s
         uses: docker/build-push-action@v2
@@ -68,6 +70,15 @@ jobs:
           tags: |
             ${{ env.IMAGE_BASE }}:ansible-k8s-latest
             ${{ env.IMAGE_BASE }}:ansible-k8s-${{needs.create_release.outputs.version}}
+
+      - name: Build github-actions-runner:fullstacked
+        uses: docker/build-push-action@v2
+        with:
+          context: ./images/fullstacked
+          push: true
+          tags: |
+            ${{ env.IMAGE_BASE }}:fullstacked-latest
+            ${{ env.IMAGE_BASE }}:fullstacked-${{needs.create_release.outputs.version}}
 
   publish_release:
     runs-on: ubuntu-latest

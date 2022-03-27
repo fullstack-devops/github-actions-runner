@@ -52,8 +52,8 @@ RUN useradd -m $USERNAME \
 # Install github runner
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh x-short) \
   && curl -L -O https://github.com/actions/runner/releases/download/v${GH_RUNNER_VERSION}/actions-runner-linux-${ARCH}-${GH_RUNNER_VERSION}.tar.gz \
-  && tar -zxf actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
-  && rm -f actions-runner-linux-x64-${GH_RUNNER_VERSION}.tar.gz \
+  && tar -zxf actions-runner-linux-${ARCH}-${GH_RUNNER_VERSION}.tar.gz \
+  && rm -f actions-runner-linux-${ARCH}-${GH_RUNNER_VERSION}.tar.gz \
   && ./bin/installdependencies.sh \
   && cd ./bin \
   && apt-get clean
