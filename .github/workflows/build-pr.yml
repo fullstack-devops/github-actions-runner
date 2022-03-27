@@ -49,7 +49,9 @@ jobs:
 
       - name: link child image to current pr
         run: |
-          sed -i --expression "s@FROM.*@FROM ${{ env.IMAGE_BASE }}:base-pr-${{ github.event.pull_request.number }}@g" images/ansible-k8s/Dockerfile
+          sed -i --expression "s@FROM.*@FROM ${{ env.IMAGE_BASE }}:base-pr-${{ github.event.pull_request.number }}@g" \
+          images/ansible-k8s/Dockerfile \
+          images/fullstacked/Dockerfile
 
       - name: Build github-actions-runner:ansible-k8s
         uses: docker/build-push-action@v2
@@ -58,3 +60,11 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_BASE }}:ansible-k8s-pr-${{ github.event.pull_request.number }}
+
+      - name: Build github-actions-runner:fullstacked
+        uses: docker/build-push-action@v2
+        with:
+          context: ./images/fullstacked
+          push: true
+          tags: |
+            ${{ env.IMAGE_BASE }}:fullstacked-pr-${{ github.event.pull_request.number }}
