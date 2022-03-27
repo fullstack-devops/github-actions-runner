@@ -12,7 +12,7 @@ if [ -p $returnpipe ]; then
     echo "Warning: removed stale communication returncode file with kaniko"
 fi
 echo "cd ${PWD}" > /kaniko/workspace/start.sh
-echo "/kaniko/executor --cleanup $@" >> /kaniko/workspace/start.sh
+echo "/kaniko/executor --cleanup --force $@" >> /kaniko/workspace/start.sh
 mkfifo $returnpipe
 mkfifo $logpipe
 cat $logpipe
