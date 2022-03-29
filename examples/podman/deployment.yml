@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: gh-runner-kaniko
+spec:
+  volumes:
+    - name: workspace-volume
+      # emptyDir: {}
+      hostPath:
+        path: /tmp/delme
+        type: Directory
+  containers:
+    - name: kaniko
+      image: ghcr.io/fullstack-devops/github-actions-runner:kaniko-sidecar-latest
+      resources: {}
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /kaniko/workspace/
+      imagePullPolicy: IfNotPresent
+      tty: true
+    - name: github-actions-runner
+      image: ghcr.io/fullstack-devops/github-actions-runner:base-latest
+      resources: {}
+      env:
+        - name: GH_ORG
+          value: "fullstack-devops"
+        - name: KANIKO_ENABLED
+          value: true
+        - name: GH_ACCESS_TOKEN
+          value: "ghp_*****"
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /kaniko/workspace/
+      imagePullPolicy: IfNotPresent
+  restartPolicy: Never

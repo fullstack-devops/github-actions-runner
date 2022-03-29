@@ -6,7 +6,9 @@ Software builds can be built there using a [Nexus Repository](https://de.sonatyp
 
 Support: If you need help or a feature just open an issue!
 
-Available Containers:
+Package / Images: ghcr.io/fullstack-devops/github-actions-runner
+
+Available Tags:
 | Name (tag)              | Installed Tools/ Software                                                                                 | Description                                                                                                                      |
 |-------------------------|-----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
 | `base-latest`           | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip | Base runner with nothing fancy installed <br> [Dockerfile](images/base/Dockerfile)                                               |
@@ -42,57 +44,47 @@ For the helm values see the [values.yaml](helm/values.yaml), section `envValues`
 
 ## Examples
 
-### docker or podman
+### docker
 
 If you are using `docker` or `podman` the options and commands are basically the same.
 
 Run registerd to an Organisation:
 ```bash
-podman run -e GH_ORG=fullstack-devops -e GH_ACCESS_TOKEN=ghp_**** github-runner-base:latest
+docker run -e GH_ORG=fullstack-devops -e GH_ACCESS_TOKEN=ghp_**** github-runner-base:latest
 ```
 
 Run registerd to an Organisation and Repo:
 ```bash
-podman run -e GH_ORG=fullstack-devops -e GH_REPO=github-runner-testing -e GH_ACCESS_TOKEN=ghp_**** github-runner-base:latest
+docker run -e GH_ORG=fullstack-devops -e GH_REPO=github-runner-testing -e GH_ACCESS_TOKEN=ghp_**** github-runner-base:latest
 ```
 
 > Replace the `ghp_****` with your own valid personal access token
 
 ### docker-compose
 
-```yaml
-version: "3"
-
-services:
-  github-runner:
-    image: github-runner-base:latest
-    environment:
-      GH_ORG: fullstack-devops
-      GH_ACCESS_TOKEN: ghp_****
+```bash
+cd examples/docker-compose
+docker-compose up -d
 ```
 
-Build images with kaniko:
-```yaml
-version: "3"
+### podman
 
-volumes:
-  kaniko_workspace:
-      driver: local
+Setup exchange directory (only nessesarry until podman supports emptyDir volumes)
+```bash
+mkdir /tmp/delme
+```
 
-services:
-  github-action-runner:
-    image: ghcr.io/fullstack-devops/github-actions-runner:base-latest
-    environment:
-      GH_ORG: fullstack-devops
-      GH_ACCESS_TOKEN: ghp_****
-      KANIKO_ENABLED: "true"
-    volumes:
-      - kaniko_workspace:/kaniko/workspace
+Starting GitHub runner with podman
+```bash
+cd examples/podman
 
-  github-action-runner-kaniko:
-    image: ghcr.io/fullstack-devops/github-actions-runner:kaniko-sidecar-latest
-    volumes:
-      - kaniko_workspace:/kaniko/workspace
+podman play kube deployment.yml
+```
+
+Removing GitHub runner an dumps
+```bash
+podman pod rm gh-runner-kaniko -f
+rm -rf /tmp/delme
 ```
 
 ### kubernetes pod
@@ -101,27 +93,34 @@ services:
 apiVersion: v1
 kind: Pod
 metadata:
-  name: gha-runner-kaniko
+  name: gh-runner-kaniko
 spec:
   volumes:
     - name: workspace-volume
       emptyDir: {}
   containers:
-    - name: github-actions-runner
-      image: ghcr.io/fullstack-devops/github-actions-runner:base-latest
-      resources: {}
-      volumeMounts:
-        - name: workspace-volume
-          mountPath: /kaniko/workspace/    
-      imagePullPolicy: Never
-      tty: true
-    - name: kaniko-sidecar
+    - name: kaniko
       image: ghcr.io/fullstack-devops/github-actions-runner:kaniko-sidecar-latest
       resources: {}
       volumeMounts:
         - name: workspace-volume
           mountPath: /kaniko/workspace/
-      imagePullPolicy: Never
+      imagePullPolicy: IfNotPresent
+      tty: true
+    - name: github-actions-runner
+      image: ghcr.io/fullstack-devops/github-actions-runner:base-latest
+      resources: {}
+      env:
+        - name: GH_ORG
+          value: "fullstack-devops"
+        - name: KANIKO_ENABLED
+          value: true
+        - name: GH_ACCESS_TOKEN
+          value: "ghp_*****"
+      volumeMounts:
+        - name: workspace-volume
+          mountPath: /kaniko/workspace/
+      imagePullPolicy: IfNotPresent
   restartPolicy: Never
 ```
 
