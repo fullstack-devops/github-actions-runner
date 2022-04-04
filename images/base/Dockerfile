@@ -13,7 +13,7 @@ ENV GH_KANIKO_WORKDIR="/kaniko/workspace"
 ENV GH_RUNNER_VERSION=2.289.2
 ENV GH_RUNNER_LABELS=ubuntu-20.04
 
-ENV AWESOME_CI_VERSION 0.11.2
+ENV AWESOME_CI_VERSION 0.11.3
 
 # making nessecarry directories
 RUN mkdir /helper-scripts \

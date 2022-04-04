@@ -12,8 +12,10 @@ RUN apt-get update \
   && apt-get clean
 
 ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,openjdk-11,nodejs,go,yarn,helm"
-ARG HELM_VERSION=3.6.3
-ARG GO_VERSION=1.17.3
+# https://github.com/helm/helm/releases
+ARG HELM_VERSION=3.8.1
+# https://go.dev/dl/
+ARG GO_VERSION=1.18
 
 # Install helm
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \
