@@ -3,7 +3,11 @@ FROM ghcr.io/fullstack-devops/github-actions-runner:base-latest
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="ansible"
+ARG PACKAGES="ansible skopeo"
+ARG PACKAGES_PYTHON="kubernetes"
+
+RUN echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${UBUNTU_VERSION}/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
+RUN curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${UBUNTU_VERSION}/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_stable.gpg > /dev/null
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
@@ -36,6 +40,8 @@ COPY requirements.yml ${TMP_DIR}/requirements.yml
 RUN chown -R ${USERNAME} /home/${USERNAME}
 
 USER ${USERNAME}
+
+RUN pip3 install ${PACKAGES_PYTHON} --user
 
 RUN ansible-galaxy install -c -r ${TMP_DIR}/requirements.yml
 RUN ansible-galaxy collection install -c -r ${TMP_DIR}/requirements.yml
