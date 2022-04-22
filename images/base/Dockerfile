@@ -1,7 +1,8 @@
 FROM ubuntu:20.04
 
+ARG UBUNTU_VERSION=20.04
 ARG DEBIAN_FRONTEND=noninteractive
-ARG PACKAGES="libffi-dev libicu-dev build-essential libssl-dev ca-certificates jq sed grep git curl wget zip"
+ARG PACKAGES="libffi-dev libicu-dev build-essential libssl-dev ca-certificates jq sed grep git curl wget zip python3-pip"
 
 ENV USERNAME="runner"
 ENV RUNNER_HOME="/home/${USERNAME}/runner"
