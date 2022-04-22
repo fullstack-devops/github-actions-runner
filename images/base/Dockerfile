@@ -5,6 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG PACKAGES="libffi-dev libicu-dev build-essential libssl-dev ca-certificates jq sed grep git curl wget zip python3-pip"
 
 ENV USERNAME="runner"
+ENV UBUNTU_VERSION=20.04
 ENV RUNNER_HOME="/home/${USERNAME}/runner"
 
 ENV GH_RUNNER_WORKDIR="/home/${USERNAME}"
