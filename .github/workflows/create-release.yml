@@ -45,7 +45,7 @@ jobs:
           tags: |
             ${{ env.IMAGE_BASE }}:latest
             ${{ env.IMAGE_BASE }}:base-latest
-            ${{ env.IMAGE_BASE }}:base-${{needs.create_release.outputs.version}}
+            ${{ env.IMAGE_BASE }}:${{needs.create_release.outputs.version}}-base
 
       - name: Build github-actions-runner:kaniko-sidecar
         uses: docker/build-push-action@v2
@@ -54,11 +54,11 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_BASE }}:kaniko-sidecar-latest
-            ${{ env.IMAGE_BASE }}:kaniko-sidecar-${{needs.create_release.outputs.version}}
+            ${{ env.IMAGE_BASE }}:${{needs.create_release.outputs.version}}-kaniko-sidecar
 
       - name: link child image to current version
         run: |
-          sed -i --expression "s@FROM.*@FROM ${{ env.IMAGE_BASE }}:base-${{ needs.create_release.outputs.version }}@g" \
+          sed -i --expression "s@FROM.*@FROM ${{ env.IMAGE_BASE }}:${{needs.create_release.outputs.version}}-base@g" \
           images/ansible-k8s/Dockerfile \
           images/fullstacked/Dockerfile
 
@@ -69,7 +69,7 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_BASE }}:ansible-k8s-latest
-            ${{ env.IMAGE_BASE }}:ansible-k8s-${{needs.create_release.outputs.version}}
+            ${{ env.IMAGE_BASE }}:${{needs.create_release.outputs.version}}-ansible-k8s
 
       - name: Build github-actions-runner:fullstacked
         uses: docker/build-push-action@v2
@@ -78,7 +78,7 @@ jobs:
           push: true
           tags: |
             ${{ env.IMAGE_BASE }}:fullstacked-latest
-            ${{ env.IMAGE_BASE }}:fullstacked-${{needs.create_release.outputs.version}}
+            ${{ env.IMAGE_BASE }}:${{needs.create_release.outputs.version}}-fullstacked
 
   publish_release:
     runs-on: ubuntu-latest
