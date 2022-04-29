@@ -1,4 +1,5 @@
 [![Create Release](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/create-release.yml/badge.svg)](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/create-release.yml)
+[![Anchore Container Scan](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/anchore.yml/badge.svg)](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/anchore.yml)
 
 # GitHub Actions Custom Runner
 Container images with Github Actions Runner. Different flavored images with preinstalled tools and software for builds with limited internet access and non root privileges.
