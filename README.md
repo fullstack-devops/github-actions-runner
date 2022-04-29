@@ -1,4 +1,6 @@
-# github-runner-base
+[![Create Release](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/create-release.yml/badge.svg)](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/create-release.yml)
+
+# GitHub Actions Custom Runner
 Container images with Github Actions Runner. Different flavored images with preinstalled tools and software for builds with limited internet access and non root privileges.
 
 Ideal for building software in enterprise environments of large organizations that often restrict internet access.
@@ -6,17 +8,17 @@ Software builds can be built there using a [Nexus Repository](https://de.sonatyp
 
 Support: If you need help or a feature just open an issue!
 
-Package / Images: ghcr.io/fullstack-devops/github-actions-runner
+Package / Images: `ghcr.io/fullstack-devops/github-actions-runner`
 
 Available Tags:
-| Name (tag)              | Installed Tools/ Software                                                                                 | Description                                                                                                                      |
-|-------------------------|-----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| `latest-base`           | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip | Base runner with nothing fancy installed <br> [Dockerfile](images/base/Dockerfile)                                               |
-| `latest-kaniko-sidecar` | kaniko                                                                                                    | Sidecar used by other runner images to build containers without root privileges                                                               |
-| `latest-ansible-k8s`    | base-image + ansible, helm, kubectl, skopeo                                                                       | Runner specialized for automated k8s deployments via ansible <br> For more Details see [Dockerfile](images/ansible-k8s/Dockerfile)            |
-| `latest-fullstacked`    | base-image + maven, openjdk-11, nodejs, go, yarn, angular/cli, helm                                       | Runner with a bunch of tools to build your hole application<br> For more Details see [Dockerfile](images/fullstacked/Dockerfile) |
+| Name (tag)              | Installed Tools/ Software                                                                                 | Description                                                                                                                        |
+|-------------------------|-----------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| `latest-base`           | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip | Base runner with nothing fancy installed <br> [Dockerfile](images/base/Dockerfile)                                                 |
+| `latest-kaniko-sidecar` | kaniko                                                                                                    | Sidecar used by other runner images to build containers without root privileges                                                    |
+| `latest-ansible-k8s`    | base-image + ansible, helm, kubectl, skopeo                                                               | Runner specialized for automated k8s deployments via ansible <br> For more Details see [Dockerfile](images/ansible-k8s/Dockerfile) |
+| `latest-fullstacked`    | base-image + maven, openjdk-11, nodejs, go, yarn, angular/cli, helm                                       | Runner with a bunch of tools to build your hole application<br> For more Details see [Dockerfile](images/fullstacked/Dockerfile)   |
 
-> Hint: `latest can be replaced with an spezfic release version for more stability`
+> Hint: `latest` can be replaced with an specific release version for more stability in your environment.
 
 ---
 
