@@ -1,13 +1,19 @@
-FROM ghcr.io/fullstack-devops/github-actions-runner:base-latest
+FROM golang:1.16 AS build
+WORKDIR $GOPATH/src/github.com/containers/skopeo
+ENV CGO_ENABLED=0
+ENV BUILDTAGS=containers_image_openpgp
+ENV DISABLE_DOCS=1
+RUN git clone https://github.com/containers/skopeo $GOPATH/src/github.com/containers/skopeo
+RUN git checkout tags/v1.7.0
+RUN make bin/skopeo
+
+FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
 
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="ansible skopeo"
+ARG PACKAGES="ansible"
 ARG PACKAGES_PYTHON="kubernetes"
-
-RUN echo "deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/xUbuntu_${UBUNTU_VERSION}/ /" | tee /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list
-RUN curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/xUbuntu_${UBUNTU_VERSION}/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/devel_kubic_libcontainers_stable.gpg > /dev/null
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
@@ -19,6 +25,8 @@ ENV GH_RUNNER_LABELS="ubuntu-20.04,ansible-k8s"
 ARG KUBECTL_VERSION=1.23.5
 # https://github.com/helm/helm/releases
 ARG HELM_VERSION=3.8.1
+
+COPY --from=build /go/src/github.com/containers/skopeo/bin/skopeo /usr/local/bin/skopeo
 
 # Install kubectl
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short)  \

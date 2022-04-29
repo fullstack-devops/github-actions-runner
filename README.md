@@ -11,10 +11,10 @@ Package / Images: ghcr.io/fullstack-devops/github-actions-runner
 Available Tags:
 | Name (tag)              | Installed Tools/ Software                                                                                 | Description                                                                                                                      |
 |-------------------------|-----------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| `base-latest`           | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip | Base runner with nothing fancy installed <br> [Dockerfile](images/base/Dockerfile)                                               |
-| `kaniko-sidecar-latest` | kaniko                                                                                                    | Sidecar used by other runner images to build containers without root privileges                                                               |
-| `ansible-k8s-latest`    | base-image + ansible, helm, kubectl                                                                       | Runner specialized for automated k8s deployments via ansible <br> For more Details see [Dockerfile](images/ansible-k8s/Dockerfile)            |
-| `fullstacked-latest`    | base-image + maven, openjdk-11, nodejs, go, yarn, angular/cli, helm                                       | Runner with a bunch of tools to build your hole application<br> For more Details see [Dockerfile](images/fullstacked/Dockerfile) |
+| `latest-base`           | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip | Base runner with nothing fancy installed <br> [Dockerfile](images/base/Dockerfile)                                               |
+| `latest-kaniko-sidecar` | kaniko                                                                                                    | Sidecar used by other runner images to build containers without root privileges                                                               |
+| `latest-ansible-k8s`    | base-image + ansible, helm, kubectl, skopeo                                                                       | Runner specialized for automated k8s deployments via ansible <br> For more Details see [Dockerfile](images/ansible-k8s/Dockerfile)            |
+| `latest-fullstacked`    | base-image + maven, openjdk-11, nodejs, go, yarn, angular/cli, helm                                       | Runner with a bunch of tools to build your hole application<br> For more Details see [Dockerfile](images/fullstacked/Dockerfile) |
 
 > Hint: `latest can be replaced with an spezfic release version for more stability`
 
@@ -100,7 +100,7 @@ spec:
       emptyDir: {}
   containers:
     - name: kaniko
-      image: ghcr.io/fullstack-devops/github-actions-runner:kaniko-sidecar-latest
+      image: ghcr.io/fullstack-devops/github-actions-runner:latest-kaniko-sidecar
       resources: {}
       volumeMounts:
         - name: workspace-volume
@@ -108,7 +108,7 @@ spec:
       imagePullPolicy: IfNotPresent
       tty: true
     - name: github-actions-runner
-      image: ghcr.io/fullstack-devops/github-actions-runner:base-latest
+      image: ghcr.io/fullstack-devops/github-actions-runner:latest-base
       resources: {}
       env:
         - name: GH_ORG
