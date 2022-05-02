@@ -127,9 +127,9 @@ jobs:
           ACI_RELEASE_ID: ${{ needs.create_release.outputs.releaseid }}
 
       - name: update helm charts appVersion
-        uses: peter-evans/repository-dispatch@v2.0.0
+        uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.HELM_REPO_TOKEN }}
-          repository: ${{ env.GITHUB_REPOSITORY_OWNER }}/helm-charts
+          repository: fullstack-devops/helm-charts
           event-type: update_chart_version
           client-payload: '{"chart": "github-actions-runner", "version": "${{ needs.create_release.outputs.version }}"}'
