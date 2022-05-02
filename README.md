@@ -34,7 +34,7 @@ Available Tags:
 
 ### Optional environmental variables
 
-For the helm values see the [values.yaml](helm/values.yaml), section `envValues`
+For the helm values see the [values.yaml](https://github.com/fullstack-devops/helm-charts/blob/main/charts/github-actions-runner/values.yaml), section `envValues`
 
 | Variable          | Type   | Default                  | Description                                                          |
 |-------------------|--------|--------------------------|----------------------------------------------------------------------|
