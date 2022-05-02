@@ -53,12 +53,12 @@ If you are using `docker` or `podman` the options and commands are basically the
 
 Run registerd to an Organisation:
 ```bash
-docker run -e GH_ORG=fullstack-devops -e GH_ACCESS_TOKEN=ghp_**** github-runner-base:latest
+docker run -e GH_ORG=fullstack-devops -e GH_ACCESS_TOKEN=ghp_**** github-actions-runner:latest
 ```
 
 Run registerd to an Organisation and Repo:
 ```bash
-docker run -e GH_ORG=fullstack-devops -e GH_REPO=github-runner-testing -e GH_ACCESS_TOKEN=ghp_**** github-runner-base:latest
+docker run -e GH_ORG=fullstack-devops -e GH_REPO=github-runner-testing -e GH_ACCESS_TOKEN=ghp_**** github-actions-runner:latest
 ```
 
 > Replace the `ghp_****` with your own valid personal access token
