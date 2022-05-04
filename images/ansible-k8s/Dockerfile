@@ -3,8 +3,7 @@ WORKDIR $GOPATH/src/github.com/containers/skopeo
 ENV CGO_ENABLED=0
 ENV BUILDTAGS=containers_image_openpgp
 ENV DISABLE_DOCS=1
-RUN git clone https://github.com/containers/skopeo $GOPATH/src/github.com/containers/skopeo
-RUN git checkout tags/v1.7.0
+RUN git clone --depth 1 --branch v1.7.0 https://github.com/containers/skopeo $GOPATH/src/github.com/containers/skopeo
 RUN make bin/skopeo
 
 FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
@@ -16,7 +15,7 @@ ARG PACKAGES="ansible"
 ARG PACKAGES_PYTHON="kubernetes"
 
 RUN apt-get update \
-  && add-apt-repository --yes --update ppa:ansible/ansible \
+  && add-apt-repository -y --update ppa:ansible/ansible \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
@@ -28,6 +27,7 @@ ARG KUBECTL_VERSION=1.23.5
 ARG HELM_VERSION=3.8.1
 
 COPY --from=build /go/src/github.com/containers/skopeo/bin/skopeo /usr/local/bin/skopeo
+COPY --from=build /go/src/github.com/containers/skopeo/default-policy.json /etc/containers/policy.json
 
 # Install kubectl
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short)  \
