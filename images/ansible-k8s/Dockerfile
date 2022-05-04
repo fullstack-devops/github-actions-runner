@@ -16,6 +16,7 @@ ARG PACKAGES="ansible"
 ARG PACKAGES_PYTHON="kubernetes"
 
 RUN apt-get update \
+  && add-apt-repository --yes --update ppa:ansible/ansible \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
