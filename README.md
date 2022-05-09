@@ -128,5 +128,4 @@ spec:
 ```
 
 ### helm
-
-tbd
+https://github.com/fullstack-devops/helm-charts/tree/main/charts/github-actions-runner
