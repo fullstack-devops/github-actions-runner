@@ -25,10 +25,8 @@ fi
 # access details
 if [ ! -z "$RUNNER_TOKEN" ]; then
     readonly REG_TOKEN=$RUNNER_TOKEN
-    unset RUNNER_TOKEN
 elif [ ! -z $GH_ACCESS_TOKEN ]; then
     readonly REG_TOKEN=$(curl -s -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $GH_ACCESS_TOKEN" $RUNNER_REG_TOKEN_URL | jq .token --raw-output)
-    unset GH_ACCESS_TOKEN
 else
     echo "Please provide one of the Environment Variables:"
     echo "GH_ACCESS_TOKEN, RUNNER_TOKEN"
@@ -65,6 +63,11 @@ echo "Runner configured"
 
 cleanup() {
     echo "Removing runner..."
+    if [ ! -z "$RUNNER_TOKEN" ]; then
+        readonly REG_TOKEN=$RUNNER_TOKEN
+    else [ ! -z $GH_ACCESS_TOKEN ]; then
+        readonly REG_TOKEN=$(curl -s -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $GH_ACCESS_TOKEN" $RUNNER_REG_TOKEN_URL | jq .token --raw-output)
+    fi
     ${RUNNER_HOME}/config.sh remove --token ${REG_TOKEN}
     exit 1
 }
