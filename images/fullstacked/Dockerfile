@@ -3,15 +3,16 @@ FROM ghcr.io/fullstack-devops/github-actions-runner:base-latest
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="openjdk-11-jdk maven nodejs"
+ARG PACKAGES="openjdk-11-jdk maven nodejs ansible"
 
 RUN apt-get update \
+  && add-apt-repository -y --update ppa:ansible/ansible \
   && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
 
-ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,openjdk-11,nodejs,go,yarn,helm"
+ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,openjdk-11,nodejs,go,yarn,helm,ansible"
 # https://github.com/helm/helm/releases
 ARG HELM_VERSION=3.8.1
 # https://go.dev/dl/
