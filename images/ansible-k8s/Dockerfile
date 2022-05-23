@@ -52,7 +52,7 @@ USER ${USERNAME}
 
 RUN pip3 install ${PACKAGES_PYTHON} --user
 
-RUN ansible-galaxy install -c -r ${TMP_DIR}/requirements.yml
+# RUN ansible-galaxy install -c -r ${TMP_DIR}/requirements.yml
 RUN ansible-galaxy collection install -c -r ${TMP_DIR}/requirements.yml
 
 # install helm plugins helm push, appr && diff
