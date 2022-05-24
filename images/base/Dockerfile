@@ -5,6 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG PACKAGES="libffi-dev libicu-dev build-essential libssl-dev ca-certificates software-properties-common jq sed grep git curl wget zip python3-pip"
 
 ENV USERNAME="runner"
+ENV USERID=1000
 ENV UBUNTU_VERSION=20.04
 ENV RUNNER_HOME="/home/${USERNAME}/runner"
 
@@ -45,7 +46,7 @@ RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short)  \
 WORKDIR /home/${USERNAME}/runner
 
 # add a non-sudo user
-RUN useradd -m $USERNAME \
+RUN useradd -m -u $USERID $USERNAME \
   && usermod -aG sudo $USERNAME \
   && chown -R $USERNAME $GH_RUNNER_WORKDIR \
   && chown -R $USERNAME $GH_KANIKO_WORKDIR \

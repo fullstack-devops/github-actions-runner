@@ -65,7 +65,7 @@ cleanup() {
     echo "Removing runner..."
     if [ ! -z "$RUNNER_TOKEN" ]; then
         readonly REG_TOKEN=$RUNNER_TOKEN
-    else [ ! -z $GH_ACCESS_TOKEN ]; then
+    elif [ ! -z $GH_ACCESS_TOKEN ]; then
         readonly REG_TOKEN=$(curl -s -X POST -H "Accept: application/vnd.github.v3+json" -H "Authorization: token $GH_ACCESS_TOKEN" $RUNNER_REG_TOKEN_URL | jq .token --raw-output)
     fi
     ${RUNNER_HOME}/config.sh remove --token ${REG_TOKEN}
