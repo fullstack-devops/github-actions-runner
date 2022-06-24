@@ -3,8 +3,11 @@ FROM ghcr.io/fullstack-devops/github-actions-runner:base-latest
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="openjdk-11-jdk maven nodejs ansible"
+ARG PACKAGES="temurin-11-jdk maven nodejs ansible"
 ARG PACKAGES_PYTHON="kubernetes"
+
+RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
+RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
 RUN apt-get update \
   && add-apt-repository -y --update ppa:ansible/ansible \
@@ -13,7 +16,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
 
-ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,openjdk-11,nodejs,go,yarn,helm,ansible"
+ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,temurin-11,nodejs,go,yarn,helm,ansible"
 # https://github.com/helm/helm/releases
 ARG HELM_VERSION=3.8.1
 # https://go.dev/dl/
