@@ -3,13 +3,14 @@ FROM ghcr.io/fullstack-devops/github-actions-runner:base-latest
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="temurin-11-jdk maven nodejs ansible"
+ARG PACKAGES="temurin-11-jdk maven nodejs ansible chromium-browser"
 ARG PACKAGES_PYTHON="kubernetes"
 
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
 RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
 RUN apt-get update \
+  && add-apt-repository -y --update ppa:phd/chromium-browser \
   && add-apt-repository -y --update ppa:ansible/ansible \
   && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
@@ -48,9 +49,10 @@ RUN mkdir -p /home/${USERNAME}/.m2/ \
 # install npm tools: yarn
 RUN npm install --global yarn @angular/cli@13
 
-USER ${USERNAME}
+USER $USERNAME
 
-RUN pip3 install ${PACKAGES_PYTHON} --user
+RUN mkdir /run/user/$USERID
+RUN pip3 install $PACKAGES_PYTHON --user
 
 # RUN ansible-galaxy install -c -r ${TMP_DIR}/requirements.yml
 RUN ansible-galaxy collection install -c -r ${TMP_DIR}/requirements.yml
