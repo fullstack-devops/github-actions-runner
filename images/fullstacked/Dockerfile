@@ -38,20 +38,21 @@ RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \
 
 ENV TMP_DIR=/home/${USERNAME}/tmp
 
+RUN mkdir /run/user/$USERID
 RUN mkdir /home/${USERNAME}/.ansible
 RUN mkdir ${TMP_DIR}
 
 COPY requirements.yml ${TMP_DIR}/requirements.yml
 
 RUN mkdir -p /home/${USERNAME}/.m2/ \
-  && chown -R ${USERNAME} /home/${USERNAME}
+  && chown -R $USERNAME /home/$USERNAME \
+  && chown -R $USERNAME /run/user/$USERID
 
 # install npm tools: yarn
 RUN npm install --global yarn @angular/cli@13
 
 USER $USERNAME
 
-RUN mkdir /run/user/$USERID
 RUN pip3 install $PACKAGES_PYTHON --user
 
 # RUN ansible-galaxy install -c -r ${TMP_DIR}/requirements.yml
