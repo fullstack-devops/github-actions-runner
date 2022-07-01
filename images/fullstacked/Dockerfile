@@ -1,29 +1,46 @@
-FROM ghcr.io/fullstack-devops/github-actions-runner:base-latest
+FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
 
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="temurin-11-jdk maven nodejs ansible chromium-browser python3-selenium"
+ARG PACKAGES="temurin-11-jdk maven nodejs ansible python3-selenium xvfb"
 ARG PACKAGES_PYTHON="kubernetes"
 
-RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
+RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=true apt-key add -
 RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
-# RUN wget -O - https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xea6e302dc78cc4b087cfc3570ebea9b02842f111 | apt-key add -
-# RUN apt-key adv --fetch-keys "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xea6e302dc78cc4b087cfc3570ebea9b02842f111" \
-# RUN echo 'deb http://ppa.launchpad.net/chromium-team/beta/ubuntu bionic main ' >> /etc/apt/sources.list.d/chromium-team-beta.list
+ADD xvfb-chromium /usr/bin/xvfb-chromium
+ADD xvfb-chromium-webgl /usr/bin/xvfb-chromium-webgl
+ADD display-chromium /usr/bin/display-chromium
 
 RUN apt-get update \
-  # && add-apt-repository -y --update ppa:phd/chromium-browser \
   && add-apt-repository -y --update ppa:ansible/ansible \
   && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
 
-RUN curl -LO https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
-RUN rm google-chrome-stable_current_amd64.deb 
+RUN MACH=$(uname -m) \
+  && [ $MACH = "x86_64" ] && ( \
+  wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
+  && (dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install; rm google-chrome-stable_current_amd64.deb; apt-get clean; rm -rf /var/lib/apt/lists/* ) \
+  && mv /usr/bin/google-chrome /usr/bin/google-chrome.real \
+  && mv /opt/google/chrome/chrome /opt/google/chrome/google-chrome.real  \
+  && ln -s /usr/lib/x86_64-linux-gnu/libOSMesa.so.6 /opt/google/chrome/libosmesa.so \
+  ) || true  \
+  && [ $MACH != "x86_64" ] && ( \
+  echo "deb http://deb.debian.org/debian buster main" >> /etc/apt/sources.list.d/debian.list \
+  && echo "deb http://deb.debian.org/debian buster-updates main" >> /etc/apt/sources.list.d/debian.list \
+  && echo 'Package: chromium*' >> /etc/apt/preferences.d/chromium.pref \
+  && echo 'Pin: origin "ftp.debian.org"' >> /etc/apt/preferences.d/chromium.pref \
+  && echo 'Pin-Priority: 700' >> /etc/apt/preferences.d/chromium.pref \
+  && apt-get update; apt-get -fy install chromium; apt-get clean; rm -rf /var/lib/apt/lists/* \
+  && mv /usr/bin/chromium /usr/bin/google-chrome.real \
+  ) || true \
+  && rm -f /etc/alternatives/google-chrome \
+  && ln -s /opt/google/chrome/google-chrome.real /etc/alternatives/google-chrome \
+  && ln -s /usr/bin/xvfb-chromium /usr/bin/google-chrome \
+  && ln -s /usr/bin/xvfb-chromium /usr/bin/chromium-browser
 
 ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,temurin-11,nodejs,go,yarn,helm,ansible"
 # https://github.com/helm/helm/releases
