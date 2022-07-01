@@ -6,12 +6,14 @@ USER root
 ARG PACKAGES="temurin-11-jdk maven nodejs ansible python3-selenium xvfb"
 ARG PACKAGES_PYTHON="kubernetes"
 
-RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=true apt-key add -
+RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
 RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
 ADD xvfb-chromium /usr/bin/xvfb-chromium
 ADD xvfb-chromium-webgl /usr/bin/xvfb-chromium-webgl
 ADD display-chromium /usr/bin/display-chromium
+
+RUN chmod +x /usr/bin/display-chromium /usr/bin/xvfb-chromium-webgl /usr/bin/xvfb-chromium
 
 RUN apt-get update \
   && add-apt-repository -y --update ppa:ansible/ansible \
