@@ -3,12 +3,18 @@ FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="temurin-11-jdk maven nodejs ansible python3-selenium xvfb libxss1 libosmesa6 libgconf-2-4"
+ARG PACKAGES="temurin-11-jdk maven nodejs ansible chromium python3-selenium xvfb"
 ARG PACKAGES_PYTHON="kubernetes"
 
+## ansible keys
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
 RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
+## chromium ppa and keys
+# RUN apt-key adv --fetch-keys "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xea6e302dc78cc4b087cfc3570ebea9b02842f111" \
+#   && echo 'deb http://ppa.launchpad.net/chromium-team/beta/ubuntu bionic main ' >> /etc/apt/sources.list.d/chromium-team-beta.list
+
+## helper for karma and chromium
 ADD xvfb-chromium /usr/bin/xvfb-chromium
 ADD xvfb-chromium-webgl /usr/bin/xvfb-chromium-webgl
 ADD display-chromium /usr/bin/display-chromium
@@ -17,20 +23,11 @@ RUN chmod +x /usr/bin/display-chromium /usr/bin/xvfb-chromium-webgl /usr/bin/xvf
 
 RUN apt-get update \
   && add-apt-repository -y --update ppa:ansible/ansible \
+  && add-apt-repository -y --update ppa:xtradeb/apps \
   && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
-
-RUN wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb \
-  && (dpkg -i google-chrome-stable_current_amd64.deb; apt-get -fy install; rm google-chrome-stable_current_amd64.deb; apt-get clean; rm -rf /var/lib/apt/lists/* ) \
-  && mv /usr/bin/google-chrome /usr/bin/google-chrome.real \
-  && mv /opt/google/chrome/chrome /opt/google/chrome/google-chrome.real  \
-  && ln -s /usr/lib/x86_64-linux-gnu/libOSMesa.so.6 /opt/google/chrome/libosmesa.so \
-  && rm -f /etc/alternatives/google-chrome \
-  && ln -s /opt/google/chrome/google-chrome.real /etc/alternatives/google-chrome \
-  && ln -s /usr/bin/xvfb-chromium /usr/bin/google-chrome \
-  && ln -s /usr/bin/xvfb-chromium /usr/bin/chromium-browser
 
 ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,temurin-11,nodejs,go,yarn,helm,ansible"
 # https://github.com/helm/helm/releases
@@ -64,7 +61,9 @@ RUN mkdir -p /home/${USERNAME}/.m2/ \
   && chown -R $USERNAME /run/user/$USERID
 
 # install npm tools: yarn
-RUN npm install --global yarn @angular/cli@13
+ENV NPM_CONFIG_LOGLEVEL=warn NG_CLI_ANALYTICS=false
+RUN npm install --location=global yarn pnpm @angular/cli@14 \
+  && npm cache clean --force
 
 USER $USERNAME
 
