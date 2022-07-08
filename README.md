@@ -2,9 +2,10 @@
 [![Anchore Container Scan](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/anchore.yml/badge.svg)](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/anchore.yml)
 
 # GitHub Actions Custom Runner
-Container images with Github Actions Runner. Different flavored images with preinstalled tools and software for builds with limited internet access and non root privileges.
+Container images with Github Actions Runner. Different flavored images with preinstalled tools and software for builds with limited internet access and non root privileges (exception for kaniko).
+With a focus on already installed software to avoid a subsequent installation by a `setup-action`.
 
-Ideal for building software in enterprise environments of large organizations that often restrict internet access.
+Ideal for building software in corporate environments of large and small organizations that often restrict Internet access.
 Software builds can be built there using a [Nexus Repository](https://de.sonatype.com/products/repository-oss) or [JFrog Artifactory](https://jfrog.com/de/artifactory/)
 
 Support: If you need help or a feature just open an issue!
@@ -12,12 +13,12 @@ Support: If you need help or a feature just open an issue!
 Package / Images: `ghcr.io/fullstack-devops/github-actions-runner`
 
 Available Tags:
-| Name (tag)              | Installed Tools/ Software                                                                                 | Description                                                                                                                        |
-| ----------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| `latest-base`           | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip | Base runner with nothing fancy installed <br> [Dockerfile](images/base/Dockerfile)                                                 |
-| `latest-kaniko-sidecar` | kaniko                                                                                                    | Sidecar used by other runner images to build containers without root privileges                                                    |
-| `latest-ansible-k8s`    | base-image + ansible, helm, kubectl, skopeo                                                               | Runner specialized for automated k8s deployments via ansible <br> For more Details see [Dockerfile](images/ansible-k8s/Dockerfile) |
-| `latest-fullstacked`    | base-image + ansible, helm, maven, temurin-11, nodejs, go, yarn, angular/cli, chromium                    | Runner with a bunch of tools to build your hole application<br> For more Details see [Dockerfile](images/fullstacked/Dockerfile)   |
+| Name (tag)              | Installed Tools/ Software                                                                                                                                                                                            | Description                                                                                                                        |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `latest-base`           | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip, [awesome-ci](https://github.com/fullstack-devops/awesome-ci), [alpaca](https://github.com/samuong/alpaca) | Base runner with nothing fancy installed <br> [Dockerfile](images/base/Dockerfile)                                                 |
+| `latest-kaniko-sidecar` | kaniko                                                                                                                                                                                                               | Sidecar used by other runner images to build containers without root privileges                                                    |
+| `latest-ansible-k8s`    | base-image + ansible, helm, kubectl, skopeo                                                                                                                                                                          | Runner specialized for automated k8s deployments via ansible <br> For more Details see [Dockerfile](images/ansible-k8s/Dockerfile) |
+| `latest-fullstacked`    | base-image + ansible, helm, maven, temurin-11, nodejs, go, yarn, angular/cli, chromium                                                                                                                               | Runner with a bunch of tools to build your hole application<br> For more Details see [Dockerfile](images/fullstacked/Dockerfile)   |
 
 > Hint: `latest` can be replaced with an specific release version for more stability in your environment.
 

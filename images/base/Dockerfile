@@ -13,10 +13,13 @@ ENV GH_RUNNER_WORKDIR="/home/${USERNAME}"
 ENV GH_KANIKO_WORKDIR="/kaniko/workspace"
 
 # https://github.com/actions/runner/releases
-ENV GH_RUNNER_VERSION=2.292.0
+ENV GH_RUNNER_VERSION=2.294.0
 ENV GH_RUNNER_LABELS=ubuntu-20.04
 
+# https://github.com/fullstack-devops/awesome-ci/releases
 ENV AWESOME_CI_VERSION 0.11.6
+# https://github.com/samuong/alpaca/releases
+ENV ALPACA_VERSION 1.3.1
 
 # making nessecarry directories
 RUN mkdir /helper-scripts \
@@ -42,6 +45,12 @@ RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short)  \
   && mv awesome-ci_${AWESOME_CI_VERSION}_${ARCH} /usr/local/src/awesome-ci \
   && chmod +x /usr/local/src/awesome-ci \
   && ln -s /usr/local/src/awesome-ci /usr/local/bin/
+
+# install alpaca
+RUN curl -L -O https://github.com/samuong/alpaca/releases/download/v${ALPACA_VERSION}/alpaca_v${ALPACA_VERSION}_linux-amd64 \
+  && mv alpaca_v${ALPACA_VERSION}_linux-amd64 /usr/local/src/alpaca \
+  && chmod +x /usr/local/src/alpaca \
+  && ln -s /usr/local/src/alpaca /usr/local/bin/
 
 WORKDIR /home/${USERNAME}/runner
 
