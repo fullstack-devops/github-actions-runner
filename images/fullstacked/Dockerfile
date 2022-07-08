@@ -1,16 +1,26 @@
-FROM ghcr.io/fullstack-devops/github-actions-runner:base-latest
+FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
 
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="temurin-11-jdk maven nodejs ansible"
+ARG PACKAGES="temurin-11-jdk maven nodejs ansible chromium python3-selenium xvfb"
 ARG PACKAGES_PYTHON="kubernetes"
 
+## ansible keys
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
 RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
+## helper for karma and chromium
+ENV CHROME_BIN="/usr/bin/chromium"
+ADD xvfb-chromium /usr/bin/xvfb-chromium
+ADD xvfb-chromium-webgl /usr/bin/xvfb-chromium-webgl
+ADD display-chromium /usr/bin/display-chromium
+
+RUN chmod +x /usr/bin/display-chromium /usr/bin/xvfb-chromium-webgl /usr/bin/xvfb-chromium
+
 RUN apt-get update \
   && add-apt-repository -y --update ppa:ansible/ansible \
+  && add-apt-repository -y --update ppa:xtradeb/apps \
   && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
   && rm -rf /var/lib/apt/lists/* \
@@ -37,20 +47,24 @@ RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \
 
 ENV TMP_DIR=/home/${USERNAME}/tmp
 
+RUN mkdir /run/user/$USERID
 RUN mkdir /home/${USERNAME}/.ansible
 RUN mkdir ${TMP_DIR}
 
 COPY requirements.yml ${TMP_DIR}/requirements.yml
 
 RUN mkdir -p /home/${USERNAME}/.m2/ \
-  && chown -R ${USERNAME} /home/${USERNAME}
+  && chown -R $USERNAME /home/$USERNAME \
+  && chown -R $USERNAME /run/user/$USERID
 
 # install npm tools: yarn
-RUN npm install --global yarn @angular/cli@13
+ENV NPM_CONFIG_LOGLEVEL=warn NG_CLI_ANALYTICS=false
+RUN npm install --location=global yarn pnpm @angular/cli@14 \
+  && npm cache clean --force
 
-USER ${USERNAME}
+USER $USERNAME
 
-RUN pip3 install ${PACKAGES_PYTHON} --user
+RUN pip3 install $PACKAGES_PYTHON --user
 
 # RUN ansible-galaxy install -c -r ${TMP_DIR}/requirements.yml
 RUN ansible-galaxy collection install -c -r ${TMP_DIR}/requirements.yml

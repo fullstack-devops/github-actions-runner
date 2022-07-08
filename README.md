@@ -17,7 +17,7 @@ Available Tags:
 | `latest-base`           | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip | Base runner with nothing fancy installed <br> [Dockerfile](images/base/Dockerfile)                                                 |
 | `latest-kaniko-sidecar` | kaniko                                                                                                    | Sidecar used by other runner images to build containers without root privileges                                                    |
 | `latest-ansible-k8s`    | base-image + ansible, helm, kubectl, skopeo                                                               | Runner specialized for automated k8s deployments via ansible <br> For more Details see [Dockerfile](images/ansible-k8s/Dockerfile) |
-| `latest-fullstacked`    | base-image + ansible, helm, maven, openjdk-11, nodejs, go, yarn, angular/cli                              | Runner with a bunch of tools to build your hole application<br> For more Details see [Dockerfile](images/fullstacked/Dockerfile)   |
+| `latest-fullstacked`    | base-image + ansible, helm, maven, temurin-11, nodejs, go, yarn, angular/cli, chromium                    | Runner with a bunch of tools to build your hole application<br> For more Details see [Dockerfile](images/fullstacked/Dockerfile)   |
 
 > Hint: `latest` can be replaced with an specific release version for more stability in your environment.
 
