@@ -20,4 +20,4 @@ function cleanup {
 
 trap cleanup EXIT
 
-google-chrome.real --disable-dev-shm-usage --no-sandbox --disable-gpu --no-first-run $@
+$CHROME_BIN --disable-dev-shm-usage --no-sandbox --disable-gpu --no-first-run $@

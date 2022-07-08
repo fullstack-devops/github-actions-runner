@@ -18,4 +18,4 @@ function cleanup {
 
 trap cleanup EXIT
 
-google-chrome.real --no-sandbox --no-first-run --use-gl=osmesa --enable-webgl --ignore-gpu-blacklist --window-size=1024,768  $@
+$CHROME_BIN --no-sandbox --no-first-run --use-gl=osmesa --enable-webgl --ignore-gpu-blacklist --window-size=1024,768  $@

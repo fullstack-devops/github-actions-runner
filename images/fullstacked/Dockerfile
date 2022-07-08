@@ -10,11 +10,8 @@ ARG PACKAGES_PYTHON="kubernetes"
 RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
 RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
-## chromium ppa and keys
-# RUN apt-key adv --fetch-keys "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xea6e302dc78cc4b087cfc3570ebea9b02842f111" \
-#   && echo 'deb http://ppa.launchpad.net/chromium-team/beta/ubuntu bionic main ' >> /etc/apt/sources.list.d/chromium-team-beta.list
-
 ## helper for karma and chromium
+ENV CHROME_BIN="/usr/bin/chromium"
 ADD xvfb-chromium /usr/bin/xvfb-chromium
 ADD xvfb-chromium-webgl /usr/bin/xvfb-chromium-webgl
 ADD display-chromium /usr/bin/display-chromium
