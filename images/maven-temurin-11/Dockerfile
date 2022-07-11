@@ -3,7 +3,7 @@ FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="temurin-11-jdk maven ansible"
+ARG PACKAGES="temurin-11-jdk maven nodejs ansible"
 ARG PACKAGES_PYTHON="kubernetes"
 
 ## ansible keys
