@@ -3,7 +3,7 @@ FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="temurin-11-jdk maven ansible"
+ARG PACKAGES="openjdk-11-jdk maven nodejs ansible"
 ARG PACKAGES_PYTHON="kubernetes"
 
 ## ansible keys
@@ -12,11 +12,12 @@ RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION
 
 RUN apt-get update \
   && add-apt-repository -y --update ppa:ansible/ansible \
+  && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
 
-ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,temurin-11,helm,ansible"
+ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,openjdk-11,nodejs,go,yarn,helm,ansible"
 # https://github.com/helm/helm/releases
 ARG HELM_VERSION=3.8.1
 
@@ -36,6 +37,11 @@ COPY requirements.yml ${TMP_DIR}/requirements.yml
 RUN mkdir -p /home/${USERNAME}/.m2/ \
   && chown -R $USERNAME /home/$USERNAME \
   && chown -R $USERNAME /run/user/$USERID
+
+# install npm tools: yarn
+ENV NPM_CONFIG_LOGLEVEL=warn NG_CLI_ANALYTICS=false
+RUN npm install --location=global yarn pnpm @angular/cli@14 \
+  && npm cache clean --force
 
 USER $USERNAME
 

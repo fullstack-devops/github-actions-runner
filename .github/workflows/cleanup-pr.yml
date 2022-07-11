@@ -5,7 +5,7 @@ on:
     types: [closed]
 
 jobs:
-  purge-image:
+  purge_base_images:
     name: Delete image from ghcr.io
     runs-on: ubuntu-latest
     steps:
@@ -25,18 +25,17 @@ jobs:
           token: ${{ secrets.GH_DEL_IMAGE_PAT }}
           tag: kaniko-sidecar-pr-${{ github.event.pull_request.number }}
 
-      - name: Delete github-actions-runner:ansible-k8s
+  purge_flavor_images:
+    name: Delete image from ghcr.io
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        flavor: [ansible-k8s, maven-adopt-8-ng, maven-temurin-11, fullstacked]
+    steps:
+      - name: Delete github-actions-runner:${{ matrix.flavor }}
         uses: bots-house/ghcr-delete-image-action@v1.0.0
         with:
           owner: ${{ github.repository_owner }}
           name: github-actions-runner
           token: ${{ secrets.GH_DEL_IMAGE_PAT }}
-          tag: ansible-k8s-pr-${{ github.event.pull_request.number }}
-
-      - name: Delete github-actions-runner:fullstacked
-        uses: bots-house/ghcr-delete-image-action@v1.0.0
-        with:
-          owner: ${{ github.repository_owner }}
-          name: github-actions-runner
-          token: ${{ secrets.GH_DEL_IMAGE_PAT }}
-          tag: fullstacked-pr-${{ github.event.pull_request.number }}
+          tag: ${{ matrix.flavor }}-pr-${{ github.event.pull_request.number }}
