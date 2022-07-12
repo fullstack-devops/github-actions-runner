@@ -7,8 +7,8 @@ ARG PACKAGES="temurin-11-jdk maven nodejs ansible"
 ARG PACKAGES_PYTHON="kubernetes"
 
 ## ansible keys
-RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add -
-RUN echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
+  && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
 RUN apt-get update \
   && add-apt-repository -y --update ppa:ansible/ansible \
