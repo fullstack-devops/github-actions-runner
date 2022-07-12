@@ -26,6 +26,7 @@ RUN mkdir /helper-scripts \
   && mkdir -p /kaniko/workspace
 
 # Copy image helper scripts
+COPY ./helper-scripts/detect-setup.sh /helper-scripts/detect-setup.sh
 COPY ./helper-scripts/gh-entrypoint.sh /helper-scripts/gh-entrypoint.sh
 COPY ./helper-scripts/kaniko-wrapper.sh /helper-scripts/kaniko-wrapper.sh
 COPY ./helper-scripts/translate-aarch.sh /helper-scripts/translate-aarch.sh
