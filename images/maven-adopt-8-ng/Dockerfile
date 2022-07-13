@@ -37,9 +37,11 @@ RUN mkdir ${TMP_DIR}
 
 COPY requirements.yml ${TMP_DIR}/requirements.yml
 
+## add also permissions to write new certs
 RUN mkdir -p /home/${USERNAME}/.m2/ \
   && chown -R $USERNAME /home/$USERNAME \
-  && chown -R $USERNAME /run/user/$USERID
+  && chown -R $USERNAME /run/user/$USERID \
+  && chmod 666 /usr/lib/jvm/adoptopenjdk-8-hotspot-amd64/jre/lib/security/cacerts
 
 # install npm tools: yarn
 ENV NPM_CONFIG_LOGLEVEL=warn NG_CLI_ANALYTICS=false
