@@ -97,7 +97,7 @@ jobs:
     needs: [create_release, build_base]
     strategy:
       matrix:
-        flavor: [ansible-k8s, maven-adopt-8-ng, maven-temurin-11, fullstacked]
+        flavor: [ansible-k8s, maven-adopt-8-ng, maven-temurin-11, golang, ng-cli-karma, fullstacked]
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2

@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        flavor: [ansible-k8s, maven-adopt-8-ng, maven-temurin-11, fullstacked]
+        flavor: [ansible-k8s, maven-adopt-8-ng, maven-temurin-11, golang, ng-cli-karma, fullstacked]
     steps:
       - name: Delete github-actions-runner:${{ matrix.flavor }}
         uses: bots-house/ghcr-delete-image-action@v1.0.0
