@@ -12,6 +12,21 @@ jobs:
     secrets:
       token: ${{ secrets.GITHUB_TOKEN }}
 
+  load_matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - id: set-matrix
+        working-directory: images
+        run: |
+          flavours=$(ls -I "base"| xargs echo | sed 's/ /,/g')
+          echo "Building flavours: $flavours"
+          flavours="{\"flavour\":[\"`echo "$flavours" | sed 's/,/","/g'`\"]}"
+          echo "::set-output name=matrix::$flavours"
+
   build_base:
     runs-on: ubuntu-latest
     needs: generate_infos
@@ -40,40 +55,11 @@ jobs:
           tags: |
             ${{ env.IMAGE_BASE }}:base-pr-${{ github.event.pull_request.number }}
 
-  build_kaniko-sidecar:
+  build_flavours:
     runs-on: ubuntu-latest
-    needs: generate_infos
-    steps:
-      - name: Check out the repo
-        uses: actions/checkout@v2
-
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v1
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        id: buildx
-        uses: docker/setup-buildx-action@v1
-
-      - name: Build github-actions-runner:kaniko-sidecar
-        uses: docker/build-push-action@v2
-        with:
-          context: ./images/kaniko-sidecar
-          push: true
-          tags: |
-            ${{ env.IMAGE_BASE }}:kaniko-sidecar-pr-${{ github.event.pull_request.number }}
-
-  build_flavors:
-    runs-on: ubuntu-latest
-    needs: [generate_infos, build_base]
+    needs: [generate_infos, load_matrix, build_base]
     strategy:
-      matrix:
-        flavor: [ansible-k8s, maven-adopt-8-ng, maven-temurin-11, golang, ng-cli-karma, fullstacked]
+      matrix: ${{ fromJson(needs.load_matrix.outputs.matrix) }}
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
@@ -94,12 +80,12 @@ jobs:
       - name: link child image to current pr
         run: |
           sed -i --expression "s@FROM ${{ env.IMAGE_BASE }}.*@FROM ${{ env.IMAGE_BASE }}:base-pr-${{ github.event.pull_request.number }}@g" \
-          images/${{ matrix.flavor }}/Dockerfile
+          images/${{ matrix.flavour }}/Dockerfile
 
-      - name: Build github-actions-runner:${{ matrix.flavor }}
+      - name: Build github-actions-runner:${{ matrix.flavour }}
         uses: docker/build-push-action@v2
         with:
-          context: ./images/${{ matrix.flavor }}
+          context: ./images/${{ matrix.flavour }}
           push: true
           tags: |
-            ${{ env.IMAGE_BASE }}:${{ matrix.flavor }}-pr-${{ github.event.pull_request.number }}
+            ${{ env.IMAGE_BASE }}:${{ matrix.flavour }}-pr-${{ github.event.pull_request.number }}

@@ -5,37 +5,31 @@ on:
     types: [closed]
 
 jobs:
-  purge_base_images:
-    name: Delete image from ghcr.io
+  load_matrix:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Delete github-actions-runner:base
-        uses: bots-house/ghcr-delete-image-action@v1.0.0
-        with:
-          owner: ${{ github.repository_owner }}
-          name: github-actions-runner
-          token: ${{ secrets.GH_DEL_IMAGE_PAT }}
-          tag: base-pr-${{ github.event.pull_request.number }}
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - id: set-matrix
+        working-directory: images
+        run: |
+          flavours=$(ls -I "base"| xargs echo | sed 's/ /,/g')
+          echo "Building flavours: $flavours"
+          flavours="{\"flavour\":[\"`echo "$flavours" | sed 's/,/","/g'`\"]}"
+          echo "::set-output name=matrix::$flavours"
 
-      - name: Delete github-actions-runner:kaniko-sidecar
-        uses: bots-house/ghcr-delete-image-action@v1.0.0
-        with:
-          owner: ${{ github.repository_owner }}
-          name: github-actions-runner
-          token: ${{ secrets.GH_DEL_IMAGE_PAT }}
-          tag: kaniko-sidecar-pr-${{ github.event.pull_request.number }}
-
-  purge_flavor_images:
-    name: Delete image from ghcr.io
+  purge_images:
     runs-on: ubuntu-latest
+    needs: load_matrix
     strategy:
-      matrix:
-        flavor: [ansible-k8s, maven-adopt-8-ng, maven-temurin-11, golang, ng-cli-karma, fullstacked]
+      matrix: ${{ fromJson(needs.load_matrix.outputs.matrix) }}
     steps:
-      - name: Delete github-actions-runner:${{ matrix.flavor }}
+      - name: Delete github-actions-runner:${{ matrix.flavour }}
         uses: bots-house/ghcr-delete-image-action@v1.0.0
         with:
           owner: ${{ github.repository_owner }}
           name: github-actions-runner
           token: ${{ secrets.GH_DEL_IMAGE_PAT }}
-          tag: ${{ matrix.flavor }}-pr-${{ github.event.pull_request.number }}
+          tag: ${{ matrix.flavour }}-pr-${{ github.event.pull_request.number }}
