@@ -13,7 +13,7 @@ ENV GH_RUNNER_WORKDIR="/home/${USERNAME}"
 ENV GH_KANIKO_WORKDIR="/kaniko/workspace"
 
 # https://github.com/actions/runner/releases
-ENV GH_RUNNER_VERSION=2.294.0
+ENV GH_RUNNER_VERSION=2.295.0
 ENV GH_RUNNER_LABELS=ubuntu-20.04
 
 # https://github.com/fullstack-devops/awesome-ci/releases
@@ -26,10 +26,10 @@ RUN mkdir /helper-scripts \
   && mkdir -p /kaniko/workspace
 
 # Copy image helper scripts
-COPY ./helper-scripts/detect-setup.sh /helper-scripts/detect-setup.sh
-COPY ./helper-scripts/gh-entrypoint.sh /helper-scripts/gh-entrypoint.sh
-COPY ./helper-scripts/kaniko-wrapper.sh /helper-scripts/kaniko-wrapper.sh
-COPY ./helper-scripts/translate-aarch.sh /helper-scripts/translate-aarch.sh
+ADD ./helper-scripts/detect-setup.sh /helper-scripts/detect-setup.sh
+ADD ./helper-scripts/gh-entrypoint.sh /helper-scripts/gh-entrypoint.sh
+ADD ./helper-scripts/kaniko-wrapper.sh /helper-scripts/kaniko-wrapper.sh
+ADD ./helper-scripts/translate-aarch.sh /helper-scripts/translate-aarch.sh
 
 RUN chmod -R 755 /helper-scripts
 
