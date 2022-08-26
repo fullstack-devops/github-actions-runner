@@ -13,7 +13,7 @@ ENV GH_RUNNER_WORKDIR="/home/${USERNAME}"
 ENV GH_KANIKO_WORKDIR="/kaniko/workspace"
 
 # https://github.com/actions/runner/releases
-ENV GH_RUNNER_VERSION=2.295.0
+ENV GH_RUNNER_VERSION=2.296.0
 ENV GH_RUNNER_LABELS=ubuntu-20.04
 
 # https://github.com/fullstack-devops/awesome-ci/releases

@@ -2,6 +2,7 @@
 [![Anchore Container Scan](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/anchore.yml/badge.svg)](https://github.com/fullstack-devops/github-actions-runner/actions/workflows/anchore.yml)
 
 # GitHub Actions Custom Runner
+
 Container images with Github Actions Runner. Different flavoured images with preinstalled tools and software for builds with limited internet access and non root privileges (exception for kaniko).
 With a focus on already installed software to avoid a subsequent installation by a `setup-action`.
 
@@ -13,8 +14,9 @@ Support: If you need help or a feature just open an issue!
 Package / Images: `ghcr.io/fullstack-devops/github-actions-runner`
 
 Available Tags:
+
 | Name (tag)                | Installed Tools/ Software                                                                                                                                                                                            | Dockerfile                                       | Description                                                                                        |
-|---------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
 | `latest-base`             | libffi-dev, libicu-dev, build-essential, libssl-dev, ca-certificates, jq, sed, grep, git, curl, wget, zip, [awesome-ci](https://github.com/fullstack-devops/awesome-ci), [alpaca](https://github.com/samuong/alpaca) | [Dockerfile](images/base/Dockerfile)             | Base runner with nothing fancy installed, but with internet connection more tools can be installed |
 | `latest-kaniko-sidecar`   | kaniko                                                                                                                                                                                                               | [Dockerfile](images/kaniko-sidecar/Dockerfile)   | Sidecar used by other runner images to build containers                                            |
 | `latest-ansible-k8s`      | base-image + ansible, helm, kubectl, skopeo                                                                                                                                                                          | [Dockerfile](images/ansible-k8s/Dockerfile)      | Runner specializing in automated k8s deployments via Ansible in your cluster                       |
@@ -32,20 +34,19 @@ Available Tags:
 
 ### Required environmental variables
 
-| Variable          | Type   | Description                                                                                                       |
-|-------------------|--------|-------------------------------------------------------------------------------------------------------------------|
-| `GH_ORG`          | string | Points to the GitHub Organisation where the runner should be installed                                            |
-| `GH_ACCESS_TOKEN` | string | Developer Token vor the GitHub Organisation<br> This Token can be personal and is onlv needed during installation |
+| Variable                               | Type   | Description                                                                                                       |
+| -------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
+| `GH_ORG`, `GH_REPO` or `GH_ENTERPRISE` | string | Points to the GitHub enterprise, organisation or repo where the runner should be installed                        |
+| `GH_ACCESS_TOKEN`                      | string | Developer Token vor the GitHub Organisation<br> This Token can be personal and is onlv needed during installation |
 
 ### Optional environmental variables
 
 For the helm values see the [values.yaml](https://github.com/fullstack-devops/helm-charts/blob/main/charts/github-actions-runner/values.yaml), section `envValues`
 
 | Variable          | Type   | Default                  | Description                                                          |
-|-------------------|--------|--------------------------|----------------------------------------------------------------------|
+| ----------------- | ------ | ------------------------ | -------------------------------------------------------------------- |
 | `GH_URL`          | string | `https://github.com`     | For GitHub Enterprise support                                        |
 | `GH_API_ENDPOINT` | string | `https://api.github.com` | For GitHub Enterprise support eg.: `https://git.example.com/api/v3/` |
-| `GH_REPO`         | string |                          | installing a runner to a spezific repository                         |
 | `KANIKO_ENABLED`  | bool   | `false`                  | enable builds with kaniko (works only with kaniko-sidecar)           |
 
 ---
@@ -57,11 +58,13 @@ For the helm values see the [values.yaml](https://github.com/fullstack-devops/he
 If you are using `docker` or `podman` the options and commands are basically the same.
 
 Run registerd to an Organisation:
+
 ```bash
 docker run -e GH_ORG=fullstack-devops -e GH_ACCESS_TOKEN=ghp_**** ghcr.io/fullstack-devops/github-actions-runner:latest-base
 ```
 
 Run registerd to an Organisation and Repo:
+
 ```bash
 docker run -e GH_ORG=fullstack-devops -e GH_REPO=github-runner-testing -e GH_ACCESS_TOKEN=ghp_**** ghcr.io/fullstack-devops/github-actions-runner:latest-base
 ```
@@ -78,11 +81,13 @@ docker-compose up -d
 ### podman
 
 Setup exchange directory (only nessesarry until podman supports emptyDir volumes)
+
 ```bash
 mkdir /tmp/delme
 ```
 
 Starting GitHub runner with podman
+
 ```bash
 cd examples/podman
 
@@ -90,6 +95,7 @@ podman play kube deployment.yml
 ```
 
 Removing GitHub runner an dumps
+
 ```bash
 podman pod rm gh-runner-kaniko -f
 rm -rf /tmp/delme
@@ -133,4 +139,5 @@ spec:
 ```
 
 ### helm
+
 https://github.com/fullstack-devops/helm-charts/tree/main/charts/github-actions-runner

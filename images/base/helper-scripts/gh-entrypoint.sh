@@ -11,15 +11,17 @@ readonly _GH_API_ENDPOINT="${GH_API_ENDPOINT:-https://api.github.com}"
 
 # Org/ Repo details
 if [ -z "$GH_ORG" ]; then
-    echo "Please provide Organisation detail by setting GH_ORG"
-    exit 255
-fi
-if [ -z "$GH_REPO" ]; then
     readonly RUNNER_URL="${_GH_URL}/${GH_ORG}"
     readonly RUNNER_REG_TOKEN_URL="${_GH_API_ENDPOINT}/orgs/${GH_ORG}/actions/runners/registration-token"
-else
+elif [ -z "$GH_REPO" ]; then
     readonly RUNNER_URL="${_GH_URL}/${GH_ORG}/${GH_REPO}"
     readonly RUNNER_REG_TOKEN_URL="${_GH_API_ENDPOINT}/repos/${GH_ORG}/${GH_REPO}/actions/runners/registration-token"
+elif [ -z "$GH_ENTERPRISE" ]; then
+    readonly RUNNER_URL="${_GH_URL}/${GH_ENTERPRISE}"
+    readonly RUNNER_REG_TOKEN_URL="${_GH_API_ENDPOINT}/enterprises/${GH_ENTERPRISEs}/actions/runners/registration-token"
+else
+    echo "Please provide Organisation detail by setting GH_ORG"
+    exit 255
 fi
 
 # access details
