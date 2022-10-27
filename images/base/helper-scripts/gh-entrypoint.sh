@@ -10,17 +10,20 @@ last_char="${GH_API_ENDPOINT: -1}"
 readonly _GH_API_ENDPOINT="${GH_API_ENDPOINT:-https://api.github.com}"
 
 # Org/ Repo details
-if [ -z "$GH_ORG" ]; then
+if [ -n "$GH_ORG" ]; then
     readonly RUNNER_URL="${_GH_URL}/${GH_ORG}"
     readonly RUNNER_REG_TOKEN_URL="${_GH_API_ENDPOINT}/orgs/${GH_ORG}/actions/runners/registration-token"
-elif [ -z "$GH_REPO" ]; then
+elif [ -n "$GH_ORG" ] && [ -n "$GH_REPO" ]; then
     readonly RUNNER_URL="${_GH_URL}/${GH_ORG}/${GH_REPO}"
     readonly RUNNER_REG_TOKEN_URL="${_GH_API_ENDPOINT}/repos/${GH_ORG}/${GH_REPO}/actions/runners/registration-token"
-elif [ -z "$GH_ENTERPRISE" ]; then
+elif [ -n "$GH_ENTERPRISE" ]; then
     readonly RUNNER_URL="${_GH_URL}/${GH_ENTERPRISE}"
     readonly RUNNER_REG_TOKEN_URL="${_GH_API_ENDPOINT}/enterprises/${GH_ENTERPRISEs}/actions/runners/registration-token"
 else
-    echo "Please provide Organisation detail by setting GH_ORG"
+    echo "Please provide the following credentials:"
+    echo "  Repository: GH_ORG and GH_REPO"
+    echo "  Organisation: GH_ORG"
+    echo "  Enterprise: GH_ENTERPRISE"
     exit 255
 fi
 
