@@ -13,13 +13,13 @@ ENV GH_RUNNER_WORKDIR="/home/${USERNAME}"
 ENV GH_KANIKO_WORKDIR="/kaniko/workspace"
 
 # https://github.com/actions/runner/releases
-ENV GH_RUNNER_VERSION=2.297.0
+ENV GH_RUNNER_VERSION=2.299.1
 ENV GH_RUNNER_LABELS=ubuntu-20.04
 
 # https://github.com/fullstack-devops/awesome-ci/releases
-ENV AWESOME_CI_VERSION 0.11.6
+ENV AWESOME_CI_VERSION 0.13.0
 # https://github.com/samuong/alpaca/releases
-ENV ALPACA_VERSION 1.3.1
+ENV ALPACA_VERSION 1.3.2
 
 # making nessecarry directories
 RUN mkdir /helper-scripts \
