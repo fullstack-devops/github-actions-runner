@@ -43,7 +43,7 @@ RUN apt-get update \
 # install awesoeme ci
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short)  \
   && curl -L -O https://github.com/fullstack-devops/awesome-ci/releases/download/${AWESOME_CI_VERSION}/awesome-ci_${AWESOME_CI_VERSION}_linux_${ARCH} \
-  && mv awesome-ci_${AWESOME_CI_VERSION}_${ARCH} /usr/local/src/awesome-ci \
+  && mv awesome-ci_${AWESOME_CI_VERSION}_linux_${ARCH} /usr/local/src/awesome-ci \
   && chmod +x /usr/local/src/awesome-ci \
   && ln -s /usr/local/src/awesome-ci /usr/local/bin/
 
