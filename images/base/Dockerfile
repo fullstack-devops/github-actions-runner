@@ -17,7 +17,7 @@ ENV GH_RUNNER_VERSION=2.300.2
 ENV GH_RUNNER_LABELS=ubuntu-20.04
 
 # https://github.com/fullstack-devops/awesome-ci/releases
-ENV AWESOME_CI_VERSION 1.1.0
+ENV AWESOME_CI_VERSION 1.1.1
 # https://github.com/samuong/alpaca/releases
 ENV ALPACA_VERSION 1.3.2
 
@@ -42,8 +42,8 @@ RUN apt-get update \
 
 # install awesoeme ci
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short)  \
-  && curl -L -O https://github.com/fullstack-devops/awesome-ci/releases/download/${AWESOME_CI_VERSION}/awesome-ci_${AWESOME_CI_VERSION}_linux_${ARCH} \
-  && mv awesome-ci_${AWESOME_CI_VERSION}_linux_${ARCH} /usr/local/src/awesome-ci \
+  && curl -L -O https://github.com/fullstack-devops/awesome-ci/releases/download/${AWESOME_CI_VERSION}/awesome-ci_${AWESOME_CI_VERSION}_linux-${ARCH} \
+  && mv awesome-ci_${AWESOME_CI_VERSION}_linux-${ARCH} /usr/local/src/awesome-ci \
   && chmod +x /usr/local/src/awesome-ci \
   && ln -s /usr/local/src/awesome-ci /usr/local/bin/
 
