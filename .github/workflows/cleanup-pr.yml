@@ -18,7 +18,7 @@ jobs:
           flavours=$(ls -I "base"| xargs echo | sed 's/ /,/g')
           echo "Building flavours: $flavours"
           flavours="{\"flavour\":[\"`echo "$flavours" | sed 's/,/","/g'`\"]}"
-          echo "::set-output name=matrix::$flavours"
+          echo "matrix=$flavours" >> $GITHUB_OUTPUT
 
   purge_images:
     runs-on: ubuntu-latest
