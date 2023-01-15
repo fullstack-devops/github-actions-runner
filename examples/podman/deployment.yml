@@ -11,7 +11,7 @@ spec:
         type: Directory
   containers:
     - name: kaniko
-      image: ghcr.io/fullstack-devops/github-actions-runner:kaniko-sidecar-latest
+      image: quay.io/fullstack-devops/github-actions-runner:kaniko-sidecar-latest
       resources: {}
       volumeMounts:
         - name: workspace-volume
@@ -19,7 +19,7 @@ spec:
       imagePullPolicy: IfNotPresent
       tty: true
     - name: github-actions-runner
-      image: ghcr.io/fullstack-devops/github-actions-runner:base-latest
+      image: quay.io/fullstack-devops/github-actions-runner:base-latest
       resources: {}
       env:
         - name: GH_ORG

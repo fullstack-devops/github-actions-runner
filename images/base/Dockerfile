@@ -26,17 +26,21 @@ RUN mkdir /helper-scripts \
   && mkdir -p /kaniko/workspace
 
 # Copy image helper scripts
-ADD ./helper-scripts/detect-setup.sh /helper-scripts/detect-setup.sh
-ADD ./helper-scripts/gh-entrypoint.sh /helper-scripts/gh-entrypoint.sh
-ADD ./helper-scripts/kaniko-wrapper.sh /helper-scripts/kaniko-wrapper.sh
-ADD ./helper-scripts/translate-aarch.sh /helper-scripts/translate-aarch.sh
+ADD ./helper-scripts/ /helper-scripts/
 
 RUN chmod -R 755 /helper-scripts
 
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
 RUN apt-get update \
+  && curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
   && apt-get install -y ${PACKAGES} \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get clean
+
+# install nodejs
+RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash - \
+  && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
 

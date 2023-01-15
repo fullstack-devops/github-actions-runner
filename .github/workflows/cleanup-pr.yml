@@ -11,14 +11,14 @@ jobs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - id: set-matrix
         working-directory: images
         run: |
           flavours=$(ls -I "base"| xargs echo | sed 's/ /,/g')
           echo "Building flavours: $flavours"
           flavours="{\"flavour\":[\"`echo "$flavours" | sed 's/,/","/g'`\"]}"
-          echo "::set-output name=matrix::$flavours"
+          echo "matrix=$flavours" >> $GITHUB_OUTPUT
 
   purge_images:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
       matrix: ${{ fromJson(needs.load_matrix.outputs.matrix) }}
     steps:
       - name: Delete github-actions-runner:${{ matrix.flavour }}
-        uses: bots-house/ghcr-delete-image-action@v1.0.0
+        uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
           owner: ${{ github.repository_owner }}
           name: github-actions-runner
