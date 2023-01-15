@@ -3,7 +3,7 @@ FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
 USER root
 # install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="temurin-11-jdk xmlstarlet maven nodejs ansible"
+ARG PACKAGES="temurin-11-jdk xmlstarlet maven ansible"
 ARG PACKAGES_PYTHON="kubernetes"
 
 ## ansible keys
@@ -45,6 +45,6 @@ RUN pip3 install $PACKAGES_PYTHON --user
 RUN ansible-galaxy collection install -c -r ${TMP_DIR}/requirements.yml
 
 # install helm plugins helm push, appr && diff
-RUN helm plugin install --version 0.10.2 https://github.com/chartmuseum/helm-push.git \
+RUN helm plugin install --version 0.10.3 https://github.com/chartmuseum/helm-push.git \
   && helm plugin install --version 0.7.0 https://github.com/app-registry/appr-helm-plugin.git \
-  && helm plugin install --version 3.4.2 https://github.com/databus23/helm-diff
+  && helm plugin install --version 3.6.0 https://github.com/databus23/helm-diff

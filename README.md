@@ -11,7 +11,7 @@ Software builds can be built there using a [Nexus Repository](https://de.sonatyp
 
 Support: If you need help or a feature just open an issue!
 
-Package / Images: `ghcr.io/fullstack-devops/github-actions-runner`
+Package / Images: `quay.io/fullstack-devops/github-actions-runner`
 
 Available Tags:
 
@@ -60,13 +60,13 @@ If you are using `docker` or `podman` the options and commands are basically the
 Run registerd to an Organisation:
 
 ```bash
-docker run -e GH_ORG=fullstack-devops -e GH_ACCESS_TOKEN=ghp_**** ghcr.io/fullstack-devops/github-actions-runner:latest-base
+docker run -e GH_ORG=fullstack-devops -e GH_ACCESS_TOKEN=ghp_**** quay.io/fullstack-devops/github-actions-runner:latest-base
 ```
 
 Run registerd to an Organisation and Repo:
 
 ```bash
-docker run -e GH_ORG=fullstack-devops -e GH_REPO=github-runner-testing -e GH_ACCESS_TOKEN=ghp_**** ghcr.io/fullstack-devops/github-actions-runner:latest-base
+docker run -e GH_ORG=fullstack-devops -e GH_REPO=github-runner-testing -e GH_ACCESS_TOKEN=ghp_**** quay.io/fullstack-devops/github-actions-runner:latest-base
 ```
 
 > Replace the `ghp_****` with your own valid personal access token
@@ -114,7 +114,7 @@ spec:
       emptyDir: {}
   containers:
     - name: kaniko
-      image: ghcr.io/fullstack-devops/github-actions-runner:latest-kaniko-sidecar
+      image: quay.io/fullstack-devops/github-actions-runner:latest-kaniko-sidecar
       resources: {}
       volumeMounts:
         - name: workspace-volume
@@ -122,7 +122,7 @@ spec:
       imagePullPolicy: IfNotPresent
       tty: true
     - name: github-actions-runner
-      image: ghcr.io/fullstack-devops/github-actions-runner:latest-base
+      image: quay.io/fullstack-devops/github-actions-runner:latest-base
       resources: {}
       env:
         - name: GH_ORG

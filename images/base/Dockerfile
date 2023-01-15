@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 ARG UBUNTU_VERSION=20.04
 ARG DEBIAN_FRONTEND=noninteractive
-ARG PACKAGES="libffi-dev libicu-dev build-essential libssl-dev ca-certificates software-properties-common jq sed grep git curl wget zip python3-pip"
+ARG PACKAGES="libffi-dev libicu-dev build-essential libssl-dev ca-certificates software-properties-common jq sed grep git curl wget zip python3-pip nodejs"
 
 ENV USERNAME="runner"
 ENV USERID=1000
