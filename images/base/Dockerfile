@@ -17,7 +17,7 @@ ENV GH_RUNNER_VERSION=2.300.2
 ENV GH_RUNNER_LABELS=ubuntu-20.04
 
 # https://github.com/fullstack-devops/awesome-ci/releases
-ENV AWESOME_CI_VERSION 1.1.1
+ENV AWESOME_CI_VERSION 1.1.2
 # https://github.com/samuong/alpaca/releases
 ENV ALPACA_VERSION 1.3.2
 
