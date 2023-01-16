@@ -116,7 +116,7 @@ jobs:
         uses: fullstack-devops/awesome-ci-action@main
 
       - name: Publish Release
-        run: awesome-ci release publish --release-id ${{ needs.create_release.outputs.release-id }}
+        run: awesome-ci release publish --release-id ${{ needs.create_release.outputs.releaseid }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
