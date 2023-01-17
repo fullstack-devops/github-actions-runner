@@ -21,7 +21,7 @@ ENV GH_RUNNER_LABELS="ubuntu-20.04,nodejs,go,golang,helm,ansible"
 # https://github.com/helm/helm/releases
 ARG HELM_VERSION=3.8.1
 # https://go.dev/dl/
-ARG GO_VERSION=1.18
+ARG GO_VERSION=1.19
 
 # Install helm
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \
