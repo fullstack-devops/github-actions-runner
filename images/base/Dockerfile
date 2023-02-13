@@ -2,7 +2,8 @@ FROM ubuntu:20.04
 
 ARG UBUNTU_VERSION=20.04
 ARG DEBIAN_FRONTEND=noninteractive
-ARG PACKAGES="libffi-dev libicu-dev build-essential libssl-dev ca-certificates software-properties-common jq sed grep git curl wget zip ansible python3-pip"
+ARG PACKAGES_BASE="libffi-dev libicu-dev build-essential libssl-dev ca-certificates software-properties-common curl"
+ARG PACKAGES_ADDITIONAL="jq sed grep git wget zip ansible python3-pip nodejs"
 ARG PACKAGES_PYTHON="kubernetes"
 
 ENV USERNAME="runner"
@@ -11,7 +12,7 @@ ENV UBUNTU_VERSION=20.04
 
 ENV HOME="/home/$USERNAME"
 ENV RUNNER_HOME="/home/$USERNAME/runner"
-ENV USER_TMP_DIR=/home/$USERNAME/tmp
+ENV USER_TMP_DIR="/home/$USERNAME/tmp"
 
 ENV GH_RUNNER_WORKDIR="/home/$USERNAME"
 ENV GH_KANIKO_WORKDIR="/kaniko/workspace"
@@ -28,16 +29,23 @@ ENV ALPACA_VERSION 1.3.2
 # making nessecarry directories
 RUN mkdir /helper-scripts \
   && mkdir -p /kaniko/workspace \
-  && mkdir /run/user/$USERID \
-  && mkdir $USER_TMP_DIR
+  && mkdir -p $USER_TMP_DIR \
+  && mkdir -p $RUNNER_HOME \
+  && mkdir -p $HOME/.ansible \
+  && mkdir -p /run/user/$USERID
 
 # Copy image helper scripts
 ADD ./helper-scripts/ /helper-scripts/
 
 RUN chmod -R 755 /helper-scripts
 
+RUN apt-get update \
+  && apt-get install -y $PACKAGES_BASE \
+  && rm -rf /var/lib/apt/lists/* \
+  && apt-get clean
+
 ## ansible keys
-RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
+RUN curl -fsSL https://packages.adoptium.net/artifactory/api/gpg/key/public | apt-key add - \
   && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
 
 # install packages along with jq so we can parse JSON
@@ -45,12 +53,7 @@ RUN wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | apt
 RUN apt-get update \
   && add-apt-repository -y --update ppa:ansible/ansible \
   && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-  && apt-get install -y ${PACKAGES} \
-  && rm -rf /var/lib/apt/lists/* \
-  && apt-get clean
-
-# install nodejs
-RUN apt-get install -y nodejs \
+  && apt-get install -y $PACKAGES_ADDITIONAL \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
 
@@ -67,16 +70,15 @@ RUN curl -L -O https://github.com/samuong/alpaca/releases/download/v${ALPACA_VER
   && chmod +x /usr/local/src/alpaca \
   && ln -s /usr/local/src/alpaca /usr/local/bin/
 
-COPY requirements.yml ${TMP_DIR}/requirements.yml
-
 WORKDIR /home/${USERNAME}/runner
 
 # add a non-sudo user
 RUN useradd -m -u $USERID $USERNAME \
   && usermod -aG sudo $USERNAME \
   && chown -R $USERNAME $GH_RUNNER_WORKDIR \
-  && chown -R $USERNAME $GH_KANIKO_WORKDIR \
-  && mkdir -p ${RUNNER_HOME}
+  && chown -R $USERNAME $GH_KANIKO_WORKDIR
+
+COPY requirements.yml $USER_TMP_DIR/requirements.yml
 
 # Install github runner
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh x-short) \
@@ -89,7 +91,6 @@ RUN export ARCH=$(/helper-scripts/translate-aarch.sh x-short) \
 
 # chown userscoped directories
 RUN chown -R $USERNAME $HOME \
-  && mkdir $HOME/.ansible \
   && chown -R $USERNAME /run/user/$USERID
 
 # set the entrypoint to the entrypoint.sh script
@@ -99,4 +100,4 @@ USER $USERNAME
 
 RUN pip3 install $PACKAGES_PYTHON --user
 # RUN ansible-galaxy install -c -r ${TMP_DIR}/requirements.yml
-RUN ansible-galaxy collection install -c -r ${TMP_DIR}/requirements.yml
+RUN ansible-galaxy collection install -c -r $USER_TMP_DIR/requirements.yml
