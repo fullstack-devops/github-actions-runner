@@ -59,7 +59,7 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       - name: Build github-actions-runner:base
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./images/base
           push: true
@@ -98,7 +98,7 @@ jobs:
           images/${{ matrix.flavour }}/Dockerfile
 
       - name: Build github-actions-runner:${{ matrix.flavour }}
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: ./images/${{ matrix.flavour }}
           push: true
