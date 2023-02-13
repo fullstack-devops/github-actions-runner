@@ -17,18 +17,25 @@ if command -v java --version &> /dev/null; then
     echo "generating single certs at $javacerts/"
     mkdir -p $javacerts
     cat $CA_FILE | awk 'split_after==1{n++;split_after=0} /-----END CERTIFICATE-----/ {split_after=1} {print > ("/tmp/javacerts/cert" n ".crt")}'
-
+    
     for f in $javacerts/*.crt ; do
         # delete empty lines in files
         sed -i '/^$/d' $f
     done
     # delete empty files to prevent errors at import
     find $javacerts -empty -delete
-
+    
+    java_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
     for x in $javacerts/*.crt ; do
         alias=$(openssl x509 -noout -subject -in "$x" | awk -F= '{print $NF}' | sed -e 's/^[ \t]*//' | sed -e 's/ /_/g')
         echo "importing cert of $alias"
-        keytool -importcert -alias $alias -keystore /usr/lib/jvm/adoptopenjdk-8-hotspot-amd64/jre/lib/security/cacerts -storepass changeit -file $x -noprompt
+        if [[ "$java_version" > "1.8" ]]; then
+            echo "using java greater 1.8"
+            keytool -importcert -alias $alias -cacerts -storepass changeit -file $x -noprompt
+        else
+            echo "using java lower 1.8"
+            keytool -importcert -alias $alias -keystore /usr/lib/jvm/adopt*/jre/lib/security/cacerts -storepass changeit -file $x -noprompt
+        fi
     done
     rm -rf $javacerts
 fi
