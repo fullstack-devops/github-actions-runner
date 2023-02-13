@@ -2,6 +2,18 @@
 
 CA_FILE="/etc/ssl/certs/ca-certificates.crt"
 
+importCertOldJava () {
+    alias=$(openssl x509 -noout -subject -in "$1" | awk -F= '{print $NF}' | sed -e 's/^[ \t]*//' | sed -e 's/ /_/g')
+    echo "importing cert $1 with alias $alias"
+    keytool -importcert -alias $alias -keystore /usr/lib/jvm/adopt*/jre/lib/security/cacerts -storepass changeit -file $1 -noprompt
+}
+
+importCertNewJava () {
+    alias=$(openssl x509 -noout -subject -in "$1" | awk -F= '{print $NF}' | sed -e 's/^[ \t]*//' | sed -e 's/ /_/g')
+    echo "importing cert $1 with alias $alias"
+    keytool -importcert -alias $alias -cacerts -storepass changeit -file $1 -noprompt -trustcacerts
+}
+
 # yarn
 if command -v yarn -v &> /dev/null; then
     echo ""
@@ -26,17 +38,17 @@ if command -v java --version &> /dev/null; then
     find $javacerts -empty -delete
     
     java_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
-    for x in $javacerts/*.crt ; do
-        alias=$(openssl x509 -noout -subject -in "$x" | awk -F= '{print $NF}' | sed -e 's/^[ \t]*//' | sed -e 's/ /_/g')
-        echo "importing cert of $alias"
-        if [[ "$java_version" > "1.8" ]]; then
-            echo "using java greater 1.8"
-            keytool -importcert -alias $alias -cacerts -storepass changeit -file $x -noprompt
-        else
-            echo "using java lower 1.8"
-            keytool -importcert -alias $alias -keystore /usr/lib/jvm/adopt*/jre/lib/security/cacerts -storepass changeit -file $x -noprompt
-        fi
-    done
+    if [[ "$java_version" > "1.8" ]]; then
+        echo "using java greater 1.8"
+        for cert in $javacerts/*.crt ; do
+            importCertNewJava $cert
+        done
+    else
+        echo "using java lower 1.8"
+        for cert in $javacerts/*.crt ; do
+            importCertOLdJava $cert
+        done
+    fi
     rm -rf $javacerts
 fi
 
