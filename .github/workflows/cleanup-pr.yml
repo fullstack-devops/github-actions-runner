@@ -27,6 +27,7 @@ jobs:
       matrix: ${{ fromJson(needs.load_matrix.outputs.matrix) }}
     steps:
       - name: Delete github-actions-runner:${{ matrix.flavour }}
+        continue-on-error: true
         uses: bots-house/ghcr-delete-image-action@v1.0.1
         with:
           owner: ${{ github.repository_owner }}

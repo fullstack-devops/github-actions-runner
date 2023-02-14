@@ -1,3 +1,4 @@
+# https://github.com/GoogleContainerTools/kaniko/releases
 FROM gcr.io/kaniko-project/executor:v1.9.1-debug
 
 COPY kaniko-entrypoint.sh /kaniko/kaniko-entrypoint.sh
