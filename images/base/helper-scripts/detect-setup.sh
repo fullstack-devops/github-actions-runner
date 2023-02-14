@@ -44,7 +44,7 @@ if command -v java --version &> /dev/null; then
     find $javacerts -empty -delete
     
     java_version=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}')
-    if [[ "$java_version" > "1.8" ]]; then
+    if [[ "$java_version" > "1.9" ]]; then
         echo "using java greater 1.8"
         for cert in $javacerts/*.crt ; do
             importCertNewJava $cert
@@ -52,7 +52,7 @@ if command -v java --version &> /dev/null; then
     else
         echo "using java lower 1.8"
         for cert in $javacerts/*.crt ; do
-            importCertOLdJava $cert
+            importCertOldJava $cert
         done
     fi
     rm -rf $javacerts
