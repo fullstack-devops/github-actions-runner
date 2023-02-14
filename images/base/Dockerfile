@@ -32,7 +32,8 @@ RUN mkdir /helper-scripts \
   && mkdir -p $USER_TMP_DIR \
   && mkdir -p $RUNNER_HOME \
   && mkdir -p $HOME/.ansible \
-  && mkdir -p /run/user/$USERID
+  && mkdir -p /run/user/$USERID \
+  && mkdir -p /etc/ssl/certs/custom
 
 # Copy image helper scripts
 ADD ./helper-scripts/ /helper-scripts/
