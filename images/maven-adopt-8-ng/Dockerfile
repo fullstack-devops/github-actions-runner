@@ -26,13 +26,13 @@ RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \
   && wget -q https://get.helm.sh/helm-v${HELM_VERSION}-linux-${ARCH}.tar.gz -O - | tar -xzO linux-${ARCH}/helm > /usr/local/bin/helm \
   && chmod +x /usr/local/bin/helm
 
-RUN mkdir -p /home/${USERNAME}/.m2/ \
-  && chown -R $USERNAME /home/$USERNAME
-
 # install npm tools: yarn
 ENV NPM_CONFIG_LOGLEVEL=warn NG_CLI_ANALYTICS=false
 RUN npm install --location=global yarn pnpm @angular/cli@15 \
   && npm cache clean --force
+  
+RUN mkdir -p /home/${USERNAME}/.m2/ \
+  && chown -R $USERNAME /home/$USERNAME
 
 USER $USERNAME
 
