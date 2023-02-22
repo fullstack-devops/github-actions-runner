@@ -31,18 +31,6 @@ else
     fi
 fi
 
-# proxy support
-if [ -n "$PROXY_PAC" ]; then
-    echo "Using configured Proxy PAC"
-    if [ ! -n "$PROXY_NTLM_CREDENTIALS" ]; then
-        echo "Please provide the Environment Variable 'PROXY_NTLM_CREDENTIALS'"
-        exit 255
-    fi
-    NTLM_CREDENTIALS="$PROXY_NTLM_CREDENTIALS" alpaca -C "$PROXY_PAC" 2>&1 1>/dev/null &
-    unset PROXY_NTLM_CREDENTIALS
-    echo $! >/tmp/proxy_pid
-fi
-
 # Org/ Repo details
 if [ -n "$GH_ORG" ]; then
     readonly RUNNER_URL="${_GH_URL}/${GH_ORG}"
@@ -89,6 +77,20 @@ fi
 echo "Connecting runner to:                              $RUNNER_URL"
 echo "Individual Runner Name:                            $HOSTNAME"
 echo "Runner Home:                                       $RUNNER_HOME"
+echo ""
+
+# proxy support
+if [ -n "$PROXY_PAC" ]; then
+    echo "Using configured Proxy PAC"
+    if [ ! -n "$PROXY_NTLM_CREDENTIALS" ]; then
+        echo "Please provide the Environment Variable 'PROXY_NTLM_CREDENTIALS'"
+        exit 255
+    fi
+    NTLM_CREDENTIALS="$PROXY_NTLM_CREDENTIALS" alpaca -C "$PROXY_PAC" >/dev/null 2>&1 &
+    unset PROXY_NTLM_CREDENTIALS
+    echo $! >/tmp/proxy_pid
+fi
+
 echo ""
 echo "Running setup for installed software..."
 /helper-scripts/detect-setup.sh
