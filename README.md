@@ -43,15 +43,93 @@ Available Tags:
 
 For the helm values see the [values.yaml](https://github.com/fullstack-devops/helm-charts/blob/main/charts/github-actions-runner/values.yaml), section `envValues`
 
-| Variable          | Type   | Default                  | Description                                                          |
-| ----------------- | ------ | ------------------------ | -------------------------------------------------------------------- |
-| `GH_URL`          | string | `https://github.com`     | For GitHub Enterprise support                                        |
-| `GH_API_ENDPOINT` | string | `https://api.github.com` | For GitHub Enterprise support eg.: `https://git.example.com/api/v3/` |
-| `KANIKO_ENABLED`  | bool   | `false`                  | enable builds with kaniko (works only with kaniko-sidecar)           |
+| Variable                 | Type   | Default                  | Description                                                               |
+| ------------------------ | ------ | ------------------------ | ------------------------------------------------------------------------- |
+| `GH_URL`                 | string | `https://github.com`     | For GitHub Enterprise support                                             |
+| `GH_API_ENDPOINT`        | string | `https://api.github.com` | For GitHub Enterprise support eg.: `https://git.example.com/api/v3/`      |
+| `KANIKO_ENABLED`         | bool   | `false`                  | enable builds with kaniko (works only with kaniko-sidecar)                |
+| `PROXY_PAC`              | string | -                        | proxy pac file url                                                        |
+| `PROXY_NTLM_CREDENTIALS` | string | -                        | (required when `PROXY_PAC` is set) credentials when connecting with proxy |
 
 ---
 
+## Proxy Support
+
+The way out ;)
+
+- Getting the Software to create the Credentials: https://github.com/samuong/alpaca/releases
+- Creating your NTML Cerdentials `alpaca -d <windows-domain (optional)> -u <windows-user> -H`
+- Set the env variables `PROXY_PAC` and `PROXY_NTLM_CREDENTIALS` in your container, pod or helm-chart
+- If you want to use the proxy service in your github-action checkout the examples
+
 ## Examples
+
+### Proxy in github actions
+
+#### for only one step
+
+```yaml
+name: Deploy from internet
+
+on:
+
+jobs:
+  add-helm-chart:
+    runs-on: [self-hosted, ansible] # look for default tags or your own
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: check helm chart
+        env:
+          http_proxy: http://localhost:3128
+          https_proxy: http://localhost:3128
+          no_proxy: "197.0.0.0/8,*.internal.net" # replace with you internal reachable adresses
+        run: |
+          helm repo add fs-devops https://fullstack-devops.github.io/helm-charts/
+          helm repo add sonatype https://sonatype.github.io/helm3-charts/
+
+      - name: do something here
+
+      - name: remove check helm chart
+        if: always()
+        run: |
+          helm repo remove fs-devops
+          helm repo remove sonatype
+```
+
+#### for whole workflow
+
+```yaml
+name: Deploy from internet
+
+on:
+
+env:
+  http_proxy: http://localhost:3128
+  https_proxy: http://localhost:3128
+  no_proxy: "197.0.0.0/8,*.internal.net" # replace with you internal reachable adresses
+
+jobs:
+  add-helm-chart:
+    runs-on: [self-hosted, ansible] # look for default tags or your own
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: check helm chart
+        run: |
+          helm repo add fs-devops https://fullstack-devops.github.io/helm-charts/
+          helm repo add sonatype https://sonatype.github.io/helm3-charts/
+
+      - name: do something here
+
+      - name: remove check helm chart
+        if: always()
+        run: |
+          helm repo remove fs-devops
+          helm repo remove sonatype
+```
 
 ### docker
 
