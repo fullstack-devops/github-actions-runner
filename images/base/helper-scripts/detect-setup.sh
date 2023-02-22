@@ -1,7 +1,6 @@
 #!/bin/bash
 
 CA_FILE="/etc/ssl/certs/ca-certificates.crt"
-CUSTOM_CA_FILE="/etc/ssl/certs/custom/ca-certificates.crt"
 
 importCertOldJava () {
     alias=$(openssl x509 -noout -subject -in "$1" | awk -F= '{print $NF}' | sed -e 's/^[ \t]*//' | sed -e 's/ /_/g')
@@ -15,9 +14,8 @@ importCertNewJava () {
     keytool -importcert -alias $alias -cacerts -storepass changeit -file $1 -noprompt -trustcacerts
 }
 
-# merge custom ca file
-if [ -f "$CA_FILE" ]; then
-    cat $CUSTOM_CA_FILE >> $CA_FILE
+if test -r $CA_FILE; then 
+    echo "[WARN] no permissions on $CA_FILE"
 fi
 
 # yarn
