@@ -86,9 +86,9 @@ else
     echo "Build container via Kaniko:                        disabled"
 fi
 
-echo "Connecting runner to:                                  $RUNNER_URL"
-echo "Individual Runner Name:                                $HOSTNAME"
-echo "Runner Home:                                           $RUNNER_HOME"
+echo "Connecting runner to:                              $RUNNER_URL"
+echo "Individual Runner Name:                            $HOSTNAME"
+echo "Runner Home:                                       $RUNNER_HOME"
 echo ""
 echo "Running setup for installed software..."
 /helper-scripts/detect-setup.sh
