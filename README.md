@@ -37,7 +37,7 @@ Available Tags:
 | Variable                               | Type   | Description                                                                                                       |
 | -------------------------------------- | ------ | ----------------------------------------------------------------------------------------------------------------- |
 | `GH_ORG`, `GH_REPO` or `GH_ENTERPRISE` | string | Points to the GitHub enterprise, organisation or repo where the runner should be installed                        |
-| `GH_ACCESS_TOKEN`                      | string | Developer Token vor the GitHub Organisation<br> This Token can be personal and is onlv needed during installation |
+| `GH_ACCESS_TOKEN`                      | string | Developer Token vor the GitHub Organisation<br></br> This Token can be personal and is onlv needed during installation |
 
 ### Optional environmental variables
 
