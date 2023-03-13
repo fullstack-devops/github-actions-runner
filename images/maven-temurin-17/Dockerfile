@@ -1,15 +1,19 @@
 FROM ghcr.io/fullstack-devops/github-actions-runner:latest-base
 
 USER root
-# install packages along with jq so we can parse JSON
 # add additional packages as necessary
-ARG PACKAGES="temurin-17-jdk xmlstarlet maven"
+ARG PACKAGES="temurin-17-jdk xmlstarlet"
 ARG PACKAGES_PYTHON="kubernetes"
 
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ${PACKAGES} \
   && rm -rf /var/lib/apt/lists/* \
   && apt-get clean
+
+# maven version > 3.6 is still not in ubuntu package managemant
+ENV MAVEN_VERSION=3.9.0
+RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -xzC /opt/ \
+  && ln -s /opt/apache-maven-3.9.0/bin/mvn /usr/bin/mvn
 
 # make cacerts for user accessable
 RUN chmod 666 /usr/lib/jvm/temurin*/lib/security/cacerts
