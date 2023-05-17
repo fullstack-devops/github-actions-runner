@@ -16,7 +16,7 @@ RUN chmod 666 /usr/lib/jvm/temurin*/lib/security/cacerts
 
 ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,temurin-11,helm,ansible"
 # https://github.com/helm/helm/releases
-ARG HELM_VERSION=3.8.1
+ARG HELM_VERSION=3.12.0
 
 # Install helm
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \

@@ -4,9 +4,9 @@ USER root
 
 ENV GH_RUNNER_LABELS="ubuntu-20.04,nodejs,golang,helm,ansible"
 # https://github.com/helm/helm/releases
-ARG HELM_VERSION=3.8.1
+ARG HELM_VERSION=3.12.0
 # https://go.dev/dl/
-ARG GO_VERSION=1.19
+ARG GO_VERSION=1.20.4
 
 # Install helm
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \
@@ -16,7 +16,7 @@ RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \
 # install build tools for golang
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \
   && wget https://golang.org/dl/go${GO_VERSION}.linux-${ARCH}.tar.gz -O /usr/local/src/go.linux.tar.gz \
-  && tar -xf /usr/local/src/go.linux.tar.gz \
+  && tar -C /usr/local/src -xzf /usr/local/src/go.linux.tar.gz \
   && rm -rf /usr/local/src/go.linux.tar.gz \
   && ln -s /usr/local/src/go/bin/go /usr/local/bin/
 
