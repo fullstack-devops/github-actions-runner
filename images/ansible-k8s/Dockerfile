@@ -14,7 +14,7 @@ ENV GH_RUNNER_LABELS="ubuntu-20.04,ansible-k8s"
 # https://github.com/kubernetes/kubernetes/releases/
 ARG KUBECTL_VERSION=1.23.5
 # https://github.com/helm/helm/releases
-ARG HELM_VERSION=3.8.1
+ARG HELM_VERSION=3.12.0
 
 COPY --from=build /go/src/github.com/containers/skopeo/bin/skopeo /usr/local/bin/skopeo
 COPY --from=build /go/src/github.com/containers/skopeo/default-policy.json /etc/containers/policy.json

@@ -11,7 +11,7 @@ RUN apt-get update \
   && apt-get clean
 
 # maven version > 3.6 is still not in ubuntu package managemant
-ENV MAVEN_VERSION=3.9.0
+ENV MAVEN_VERSION=3.9.2
 RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -xzC /opt/ \
   && ln -s /opt/apache-maven-3.9.0/bin/mvn /usr/bin/mvn
 
@@ -20,7 +20,7 @@ RUN chmod 666 /usr/lib/jvm/temurin*/lib/security/cacerts
 
 ENV GH_RUNNER_LABELS="ubuntu-20.04,maven,temurin-17,helm,ansible"
 # https://github.com/helm/helm/releases
-ARG HELM_VERSION=3.8.1
+ARG HELM_VERSION=3.12.0
 
 # Install helm
 RUN export ARCH=$(/helper-scripts/translate-aarch.sh a-short) \

@@ -22,7 +22,7 @@ RUN apt-get update \
 
 ENV GH_RUNNER_LABELS="ubuntu-20.04,nodejs,yarn,karma,chrome,helm,ansible"
 # https://github.com/helm/helm/releases
-ARG HELM_VERSION=3.8.1
+ARG HELM_VERSION=3.12.0
 # https://go.dev/dl/
 ARG GO_VERSION=1.18
 
