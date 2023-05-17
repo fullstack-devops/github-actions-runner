@@ -24,6 +24,8 @@ RUN chown -R $USERNAME /home/$USERNAME
 
 USER $USERNAME
 
+ENV PATH=$PATH:/home/runner/go/bin
+
 # install helm plugins helm push, appr && diff
 RUN helm plugin install --version 0.10.3 https://github.com/chartmuseum/helm-push.git \
   && helm plugin install --version 0.7.0 https://github.com/app-registry/appr-helm-plugin.git \
