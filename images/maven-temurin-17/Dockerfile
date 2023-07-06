@@ -11,9 +11,9 @@ RUN apt-get update \
   && apt-get clean
 
 # maven version > 3.6 is still not in ubuntu package managemant
-ENV MAVEN_VERSION=3.9.2
+ENV MAVEN_VERSION=3.9.3
 RUN curl -fsSL https://dlcdn.apache.org/maven/maven-3/${MAVEN_VERSION}/binaries/apache-maven-${MAVEN_VERSION}-bin.tar.gz | tar -xzC /opt/ \
-  && ln -s /opt/apache-maven-3.9.0/bin/mvn /usr/bin/mvn
+  && ln -s /opt/apache-maven-${MAVEN_VERSION}/bin/mvn /usr/bin/mvn
 
 # make cacerts for user accessable
 RUN chmod 666 /usr/lib/jvm/temurin*/lib/security/cacerts
